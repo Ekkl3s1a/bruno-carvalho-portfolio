@@ -3,6 +3,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { ArrowDown } from 'lucide-vue-next'
 import BaseButton from '@/components/shared/BaseButton.vue'
 import SocialLink from '@/components/shared/SocialLink.vue'
+import { useScrollTo } from '@/composables/useScrollTo'
 
 // ── Typewriter ────────────────────────────────────────────────
 const roles = [
@@ -12,6 +13,10 @@ const roles = [
   'Open Source Enthusiast',
   'VS Code Theme Creator',
 ]
+
+const { scrollTo } = useScrollTo()
+
+const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
 
 const displayText   = ref('')
 const cursorOn      = ref(true)
@@ -118,7 +123,7 @@ onBeforeUnmount(() => {
           <BaseButton :to="'/projects'">
             View Projects
           </BaseButton>
-          <BaseButton variant="outlined" href="../../assets/resume_bruno_carvalho.pdf" download>
+          <BaseButton variant="outlined" :href="cvUrl" download>
             Download CV
           </BaseButton>
         </div>
@@ -162,7 +167,7 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Scroll indicator -->
-    <a href="#about" class="hero__scroll" aria-label="Scroll to About section">
+    <a class="hero__scroll" aria-label="Scroll to About section" @click="scrollTo('about')">
       <ArrowDown :size="20" aria-hidden="true" />
     </a>
 
@@ -306,6 +311,11 @@ onBeforeUnmount(() => {
     line-height: 1.8;
     max-width: 520px;
     margin: 0;
+  }
+
+  &__bio-highlight {
+    color: var(--color-text);
+    font-weight: 600;
   }
 
   &__link {

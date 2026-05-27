@@ -1,11 +1,27 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { Menu, X, Download } from 'lucide-vue-next'
 import ThemeToggle from '@/components/shared/ThemeToggle.vue'
 
-const isScrolled  = ref(false)
-const isMenuOpen  = ref(false)
+// ── CV ────────────────────────────────────────────────────────
+const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
+
+// ── Route (para active state manual) ─────────────────────────
+const route = useRoute()
+
+// ── Estado ────────────────────────────────────────────────────
+const isScrolled = ref(false)
+const isMenuOpen = ref(false)
+
+// ── Nav links ─────────────────────────────────────────────────
+// hash? → link de secção (in-page scroll via scrollBehavior do router)
+// sem hash → rota real
+interface NavLink {
+  label: string
+  to: string
+  hash?: string
+}
 
 const navLinks = [
   { label: 'Home',           to: '/',                hash: '' },
@@ -16,7 +32,26 @@ const navLinks = [
   { label: 'Contact',        to: '/#contact',        hash: '#contact' },
 ]
 
+// ── Active state manual ───────────────────────────────────────
+// Substitui o active-class do RouterLink que ativa em simultâneo
+// todos os links com path '/'
+function isActive(link: NavLink): boolean {
+  if (link.hash) {
+    // Secção: só activo quando o hash da rota coincide exactamente
+    return route.path === '/' && route.hash === link.hash
+  }
+  if (link.to === '/') {
+    // Home: activo só quando estamos em '/' sem hash
+    return route.path === '/' && !route.hash
+  }
+  // Rota real: match exacto do path
+  return route.path === link.to
+}
+
+// ── Scroll ────────────────────────────────────────────────────
 function handleScroll() { isScrolled.value = window.scrollY > 24 }
+
+// ── Mobile menu ───────────────────────────────────────────────
 
 function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value
@@ -52,7 +87,7 @@ onBeforeUnmount(() => {
           :key="link.to"
           :to="link.to"
           class="header__nav-link"
-          active-class="header__nav-link--active"
+          :class="{ 'header__nav-link--active': isActive(link) }"
         >
           {{ link.label }}
         </RouterLink>
@@ -63,7 +98,7 @@ onBeforeUnmount(() => {
         <ThemeToggle />
 
         <a
-          href="../../assets/resume_bruno_carvalho.pdf"
+          :href="cvUrl"
           download
           class="header__cv"
           aria-label="Download CV PDF"
@@ -101,7 +136,7 @@ onBeforeUnmount(() => {
           :key="link.to"
           :to="link.to"
           class="header__mobile-link"
-          active-class="header__mobile-link--active"
+          :class="{ 'header__mobile-link--active': isActive(link) }"
           @click="closeMenu"
         >
           {{ link.label }}
@@ -109,7 +144,7 @@ onBeforeUnmount(() => {
 
         <div class="header__mobile-footer">
           <a
-            href="../../assets/resume_bruno_carvalho.pdf"
+            :href="cvUrl"
             download
             class="header__mobile-cv"
             @click="closeMenu"
@@ -274,6 +309,7 @@ onBeforeUnmount(() => {
     inset-block-start: var(--header-height);
     inset-inline: 0;
     inset-block-end: 0;
+    z-index: 200;
     background: var(--color-bg);
     border-top: 1px solid var(--color-border);
     display: flex;
