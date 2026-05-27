@@ -1,0 +1,35 @@
+// ─────────────────────────────────────────────────────────────
+// main.scss — Global stylesheet entry point
+// Imported once in src/main.ts
+// ─────────────────────────────────────────────────────────────
+
+@use 'tokens';      // Layer 1-3 CSS custom properties
+@use 'reset';       // Modern CSS reset
+@use 'typography';  // Global type styles
+@use 'animations';  // Keyframes + .reveal
+
+// ── App layout ───────────────────────────────────────────────
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+// ── Custom scrollbar (WebKit) ─────────────────────────────────
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--color-bg); }
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-hover);
+  border-radius: var(--radius-pill);
+}
+
+// ── Focus visible ─────────────────────────────────────────────
+// WCAG 2.4.7: visible focus ring on keyboard navigation
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}

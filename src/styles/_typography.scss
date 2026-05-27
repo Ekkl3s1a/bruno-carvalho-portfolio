@@ -1,0 +1,57 @@
+// ─────────────────────────────────────────────────────────────
+// _typography.scss — Global type styles
+// Scale: modular ×1.25 — 16/20/25/31/39px
+// ─────────────────────────────────────────────────────────────
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  transition:
+    background-color var(--transition-base),
+    color var(--transition-base);
+}
+
+// Fluid headings (clamp: mobile → desktop)
+h1 { font-size: clamp(2.2rem,  6vw,  3.5rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.75rem, 4vw,  2.25rem); font-weight: 700; line-height: 1.2; }
+h3 { font-size: clamp(1.2rem,  3vw,  1.4rem);  font-weight: 600; line-height: 1.3; }
+h4 { font-size: 1.1rem;  font-weight: 600; }
+h5 { font-size: 1rem;    font-weight: 600; }
+h6 { font-size: 0.875rem;font-weight: 600; }
+
+p { margin-bottom: 1rem; }
+p:last-child { margin-bottom: 0; }
+
+strong, b { font-weight: 600; }
+
+code, kbd, pre, samp {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+// Selection
+::selection {
+  background-color: rgba(45, 212, 191, 0.28);
+  color: var(--color-text);
+}
+
+// Utility classes
+.mono { font-family: var(--font-mono); }
+.text-muted { color: var(--color-text-muted); }
+.text-primary { color: var(--color-primary); }
+
+// sr-only (accessibility)
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
