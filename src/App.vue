@@ -3,6 +3,7 @@ import { onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
+import ScrollProgressBar  from '@/components/shared/ScrollProgressBar.vue'
 import { useThemeStore } from '@/stores/theme'
 
 const themeStore = useThemeStore()
@@ -13,6 +14,8 @@ onMounted(() => themeStore.initTheme())
 
 <template>
   <div class="app">
+    <ScrollProgressBar />
+
     <AppHeader />
     <main id="main-content" class="app__main" tabindex="-1">
       <RouterView />
