@@ -152,7 +152,7 @@ onMounted(() => github.fetchRepos())
               rel="noopener noreferrer"
               class="project-card__demo"
               :aria-label="`Live demo for ${repo.name}`"
-              @click.stop.prevent="window.open(repo.homepage, '_blank')"
+              @click.stop
             >
               ↗ Live demo
             </a>
