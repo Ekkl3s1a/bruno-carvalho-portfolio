@@ -124,37 +124,39 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Mobile nav menu -->
-    <Transition name="mobile-menu">
-      <nav
-        v-if="isMenuOpen"
-        id="mobile-menu"
-        class="header__mobile"
-        aria-label="Mobile navigation"
-      >
-        <RouterLink
-          v-for="link in navLinks"
-          :key="link.to"
-          :to="link.to"
-          class="header__mobile-link"
-          :class="{ 'header__mobile-link--active': isActive(link) }"
-          @click="closeMenu"
+    <Teleport to="body">
+      <Transition name="mobile-menu">
+        <nav
+          v-if="isMenuOpen"
+          id="mobile-menu"
+          class="header__mobile"
+          aria-label="Mobile navigation"
         >
-          {{ link.label }}
-        </RouterLink>
-
-        <div class="header__mobile-footer">
-          <a
-            :href="cvUrl"
-            download
-            class="header__mobile-cv"
+          <RouterLink
+            v-for="link in navLinks"
+            :key="link.to"
+            :to="link.to"
+            class="header__mobile-link"
+            :class="{ 'header__mobile-link--active': isActive(link) }"
             @click="closeMenu"
           >
-            <Download :size="15" aria-hidden="true" />
-            Download CV
-          </a>
-        </div>
-      </nav>
-    </Transition>
+            {{ link.label }}
+          </RouterLink>
+
+          <div class="header__mobile-footer">
+            <a
+              :href="cvUrl"
+              download
+              class="header__mobile-cv"
+              @click="closeMenu"
+            >
+              <Download :size="15" aria-hidden="true" />
+              Download CV
+            </a>
+          </div>
+        </nav>
+      </Transition>
+    </Teleport>
   </header>
 </template>
 
