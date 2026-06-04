@@ -93,7 +93,8 @@ onMounted(() => github.fetchRepos())
 
 .about {
   @include section-padding;
-  background: var(--color-surface);
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(12px);
 
   &__container { @include container; }
 

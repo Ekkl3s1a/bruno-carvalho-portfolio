@@ -101,6 +101,8 @@ function formatDate(date: string) {
 
 .certs {
   @include section-padding;
+  background: var(--color-glass-surface);
+  backdrop-filter: blur(12px);
 
   &__container { @include container; }
 
@@ -116,6 +118,9 @@ function formatDate(date: string) {
 // ── Cert item ─────────────────────────────────────────────────
 
 .cert-item {
+  background:     var(--color-glass-card) !important;
+  border-color:   var(--color-glass-border) !important;
+  backdrop-filter: blur(8px);
   display: grid;
   grid-template-columns: 32px 1fr;
   gap: 0 1.25rem;

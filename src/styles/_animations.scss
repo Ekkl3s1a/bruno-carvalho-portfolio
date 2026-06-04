@@ -75,3 +75,33 @@
     transition: none;
   }
 }
+
+// ── VS Code intro ─────────────────────────────────────────────
+@keyframes vsc-boot {
+  0%   { opacity: 0; transform: scale(.97); filter: blur(6px); }
+  100% { opacity: 1; transform: scale(1);   filter: blur(0); }
+}
+
+// ── Cursor blink ──────────────────────────────────────────────
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100%{ opacity: 0; }
+}
+
+// ── Scan line (used in hero overlay) ─────────────────────────
+@keyframes scan {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+// ── Gentle float (scroll cue, badge dot) ─────────────────────
+@keyframes float {
+  0%,100%{ transform: translateX(-50%) translateY(0); }
+  50%    { transform: translateX(-50%) translateY(-7px); }
+}
+
+@keyframes pulse {
+  0%,100%{ box-shadow: 0 0 0 3px rgba(52,211,153,.25); }
+  50%    { box-shadow: 0 0 0 6px rgba(52,211,153,.08); }
+}
+

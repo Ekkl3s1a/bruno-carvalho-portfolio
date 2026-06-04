@@ -154,7 +154,8 @@ onBeforeUnmount(stopAuto)
 
 .testimonials {
   @include section-padding;
-  background: var(--color-surface);
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(12px);
 
   &__container {
     @include container;
@@ -162,7 +163,9 @@ onBeforeUnmount(stopAuto)
   }
 
   &__card {
-    background: var(--color-card);
+    background:     var(--color-glass-card) !important;
+    border-color:   var(--color-glass-border) !important;
+    backdrop-filter: blur(8px);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
     padding: 2.5rem;

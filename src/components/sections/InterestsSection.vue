@@ -85,6 +85,8 @@ const groups: Group[] = [
 
 .interests {
   @include section-padding;
+  background: var(--color-glass-surface);
+  backdrop-filter: blur(12px);
 
   &__container { @include container; }
 

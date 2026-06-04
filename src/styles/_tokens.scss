@@ -97,6 +97,20 @@
   --tag-bg:    var(--color-surface);
   --tag-text:  var(--color-text-muted);
   --tag-border: var(--color-border);
+
+  // ── Glass surfaces (para sections sobre o canvas 3D) ─────────
+  --color-glass-bg:       rgba(8,  33, 33, 0.72);
+  --color-glass-surface:  rgba(13, 46, 44, 0.78);
+  --color-glass-card:     rgba(17, 61, 58, 0.82);
+  --color-glass-border:   rgba(45, 212, 191, 0.12);
+
+  // ── VS Code chrome ────────────────────────────────────────────
+  --vsc-titlebar:   rgba(13, 46, 44, 0.96);
+  --vsc-activity:   rgba(8,  33, 33, 0.96);
+  --vsc-statusbar:  #2DD4BF;
+  --vsc-tab-active: rgba(8,  33, 33, 0.98);
+  --vsc-tab-idle:   rgba(13, 46, 44, 0.70);
+  --vsc-gutter:     rgba(45, 212, 191, 0.18);
 }
 
 // ── Layer 2 OVERRIDE: Light Mode ──────────────────────────────

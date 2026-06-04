@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import HomeView from '@/views/HomeView.vue'
 
 const router = createRouter({
@@ -36,6 +37,7 @@ const router = createRouter({
 
 // Dynamic page title
 router.afterEach((to) => {
+  setTimeout(() => ScrollTrigger.refresh(), 150)
   const title = to.meta.title as string | undefined
   document.title = title
     ? `${title} — Bruno Carvalho`

@@ -110,7 +110,8 @@ const preview = computed(() => github.filteredRepos.slice(0, 6))
 
 .projects {
   @include section-padding;
-  background: var(--color-surface);
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(12px);
 
   &__container { @include container; }
 
@@ -138,6 +139,9 @@ const preview = computed(() => github.filteredRepos.slice(0, 6))
 
 .project-card {
   @include card;
+  background:     var(--color-glass-card) !important;
+  border-color:   var(--color-glass-border) !important;
+  backdrop-filter: blur(8px);
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
