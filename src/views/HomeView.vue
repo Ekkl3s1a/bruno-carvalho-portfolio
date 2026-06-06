@@ -9,6 +9,7 @@ import { getMorphTo } from '@/composables/useBackground3D'
 import BaseButton from '@/components/shared/BaseButton.vue'
 import SocialLink from '@/components/shared/SocialLink.vue'
 import { ExternalLink } from 'lucide-vue-next'
+import ThemeToggle from '@/components/shared/ThemeToggle.vue'
 
 const router = useRouter()
 const github = useGithubStore()
@@ -46,6 +47,45 @@ const skillsData = [
   { label: 'Next.js', color: '#ffffff', x: 32, y: 88, size: 'xs', delay: .7, rot: -2 },
 ]
 
+const year = new Date().getFullYear()
+
+const skillGroups = [
+  {
+    title: 'Programming & Frameworks',
+    icon: '⚡',
+    desc: 'Frontend-first, not framework-exclusive.',
+    skills: [
+      'Angular', 'Vue 3', 'React', 'TypeScript',
+      'JavaScript ES6+', 'HTML5', 'SCSS', 'Next.js', 'Nuxt 3',
+    ],
+  },
+  {
+    title: 'Tools & Platforms',
+    icon: '🛠',
+    desc: 'From API design to CI/CD.',
+    skills: [
+      'FastAPI', 'Express.js', 'Node.js', 'REST APIs',
+      'Git & GitHub', 'GitHub Actions', 'Vite', 'Docker', 'Figma',
+    ],
+  },
+  {
+    title: 'Professional Skills',
+    icon: '🎯',
+    desc: 'What makes the code matter.',
+    skills: [
+      'Responsive Design', 'Performance Optimization',
+      'Component Architecture', 'Clean Code',
+      'UI/UX Sensibility', 'Open Source',
+    ],
+  },
+]
+
+// Interests data
+const interests = {
+  sports: ['⚽ Football', '🏓 Padel', '🏃 Running', '💪 Calisthenics'],
+  tech: ['🔓 Open Source', '🎨 VS Code Tooling', '🚀 New Frameworks', '🎙 Tech Podcasts'],
+}
+
 const displayText = ref('')
 const cursorOn = ref(true)
 let roleIdx = 0, charIdx = 0, deleting = false
@@ -71,10 +111,11 @@ const depthLabel = ref('Surface')
 const depths = [
   { at: 0.00, label: 'Surface' },
   { at: 0.22, label: '~10m' },
-  { at: 0.42, label: '~25m' },
-  { at: 0.60, label: '~50m' },
-  { at: 0.78, label: '~80m' },
-  { at: 0.90, label: '~120m' },
+  { at: 0.40, label: '~25m' },
+  { at: 0.56, label: '~50m' },
+  { at: 0.70, label: '~80m' },
+  { at: 0.80, label: '~100m' },
+  { at: 0.88, label: '~120m' },
 ]
 
 // ── ScrollTrigger handle ──────────────────────────────────────
@@ -98,116 +139,112 @@ onBeforeUnmount(() => {
 function setupTimeline() {
   const morphTo = getMorphTo()
 
-  // Mapa: progress 0→1 ao longo de 600vh de scroll
   const tl = gsap.timeline({ paused: true })
 
-  // ── HERO sai (0.18 → 0.32) ──────────────────────────────────
-  tl.to('.vsc-bar--title', { y: -44, opacity: 0, ease: 'none', duration: .12 }, .18)
-  tl.to('.vsc-bar--activity', { x: -52, opacity: 0, ease: 'none', duration: .12 }, .19)
-  tl.to('.vsc-bar--status', { y: 26, opacity: 0, ease: 'none', duration: .12 }, .19)
+  // ── HERO sai (0.18 → 0.30) ───────────────────────────────────
+  tl.to('.vsc-bar--title', { y: -44, opacity: 0, ease: 'none', duration: .11 }, .18)
+  tl.to('.vsc-bar--activity', { x: -52, opacity: 0, ease: 'none', duration: .11 }, .19)
+  tl.to('.vsc-bar--status', { y: 28, opacity: 0, ease: 'none', duration: .11 }, .19)
   tl.to('.hero-content, .vsc-gutter, .vsc-code', {
     opacity: 0, scale: .93, filter: 'blur(5px)',
     ease: 'none', duration: .12,
-  }, .21)
+  }, .20)
   tl.to('.l-hero', { opacity: 0, ease: 'none', duration: .06 }, .30)
 
-  // ── ABOUT entra (0.22 → 0.34) / sai (0.40 → 0.48) ──────────
+  // ── ABOUT   (0.22 enter → 0.37 exit) ─────────────────────────
   tl.fromTo('.l-about',
     { opacity: 0, scale: .88, filter: 'blur(12px)' },
-    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .12 },
-    .22)
+    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .12 }, .22)
   tl.to('.l-about',
-    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .10 },
-    .40)
+    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .09 }, .37)
 
-  // ── SKILLS entra (0.42 → 0.55) / sai (0.58 → 0.65) ─────────
+  // ── SKILLS  (0.39 enter → 0.54 exit) ─────────────────────────
   tl.fromTo('.l-skills',
     { opacity: 0, scale: .88, filter: 'blur(12px)' },
-    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .13 },
-    .42)
+    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .13 }, .39)
   tl.to('.l-skills',
-    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .09 },
-    .58)
+    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .09 }, .54)
 
-  // ── PROJECTS entra (0.60 → 0.73) / sai (0.76 → 0.83) ───────
+  // ── PROJECTS (0.56 enter → 0.70 exit) ────────────────────────
   tl.fromTo('.l-projects',
     { opacity: 0, scale: .88, filter: 'blur(12px)' },
-    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .13 },
-    .60)
+    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .13 }, .56)
   tl.to('.l-projects',
-    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .09 },
-    .76)
+    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .09 }, .70)
 
-  // ── CERTS entra (0.78 → 0.88) / sai (0.90 → 0.95) ──────────
+  // ── CERTS   (0.68 enter → 0.80 exit) ─────────────────────────
   tl.fromTo('.l-certs',
     { opacity: 0, scale: .88, filter: 'blur(12px)' },
-    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .10 },
-    .78)
+    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .10 }, .68)
   tl.to('.l-certs',
-    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .07 },
-    .90)
+    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .08 }, .80)
 
-  // ── CONTACT entra (0.88 → 1.00) ─────────────────────────────
+  // ── INTERESTS (0.78 enter → 0.90 exit) ───────────────────────
+  tl.fromTo('.l-interests',
+    { opacity: 0, scale: .88, filter: 'blur(12px)' },
+    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .10 }, .78)
+  tl.to('.l-interests',
+    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .08 }, .90)
+
+  // ── CONTACT  (0.88 enter → stays) ────────────────────────────
   tl.fromTo('.l-contact',
     { opacity: 0, scale: .88, filter: 'blur(12px)' },
-    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .12 },
-    .88)
+    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .12 }, .88)
 
-  // ── Vignette escurece progressivamente ───────────────────────
-  tl.to('.home__vignette', { opacity: .88, ease: 'none', duration: 1 }, 0)
+  // ── Vignette escurece até .90 de opacidade ────────────────────
+  tl.to('.home__vignette', { opacity: .90, ease: 'none', duration: 1 }, 0)
 
-  // ── pointer-events: sync com opacidade ───────────────────────
-  // (layers invisíveis não devem ser clicáveis)
-  const togglePointer = (sel: string, on: boolean) =>
+  // ── Pointer-events helper ─────────────────────────────────────
+  const tp = (sel: string, on: boolean) =>
     (document.querySelector(sel) as HTMLElement | null)
       ?.style.setProperty('pointer-events', on ? 'auto' : 'none')
 
-  // ── Ligar ao scroll ───────────────────────────────────────────
+  // ── Morph breaks ──────────────────────────────────────────────
   let lastSection = 'hero'
   const morphBreaks: Array<{ at: number; section: string }> = [
     { at: .22, section: 'about' },
-    { at: .42, section: 'skills' },
-    { at: .60, section: 'projects' },
-    { at: .78, section: 'certifications' },
-    { at: .88, section: 'contact' },
+    { at: .40, section: 'skills' },
+    { at: .57, section: 'projects' },
+    { at: .69, section: 'certifications' },
+    { at: .79, section: 'about' }, // interests reusa esfera
+    { at: .89, section: 'contact' },
   ]
-  // Reverse map for scrolling back up
-  const reverseMorphBreaks = [...morphBreaks].reverse()
 
+  // ── ScrollTrigger ─────────────────────────────────────────────
   st = ScrollTrigger.create({
     trigger: '.home__driver',
     start: 'top top',
     end: 'bottom bottom',
     scrub: 1.4,
     onUpdate(self) {
-      // Drive master timeline
       tl.progress(self.progress)
 
-      // Update depth label
+      // Depth label
       for (const d of depths) {
         if (self.progress >= d.at) depthLabel.value = d.label
       }
 
-      // Trigger particle morph at section boundaries
+      // Particle morph
       if (morphTo) {
-        let current = 'hero'
+        let cur = 'hero'
         for (const b of morphBreaks) {
-          if (self.progress >= b.at) current = b.section
+          if (self.progress >= b.at) cur = b.section
         }
-        if (current !== lastSection) {
-          lastSection = current
-          morphTo(current as any)
+        if (cur !== lastSection) {
+          lastSection = cur
+          morphTo(cur as any)
         }
       }
 
-      // Sync pointer-events: only active layer is interactive
+      // Pointer-events sync
       const p = self.progress
-      togglePointer('.l-hero', p < .32)
-      togglePointer('.l-about', p >= .22 && p < .48)
-      togglePointer('.l-skills', p >= .42 && p < .65)
-      togglePointer('.l-projects', p >= .60 && p < .83)
-      togglePointer('.l-certs', p >= .78 && p < .95)
-      togglePointer('.l-contact', p >= .88)
+      tp('.l-hero', p < .30)
+      tp('.l-about', p >= .22 && p < .46)
+      tp('.l-skills', p >= .39 && p < .62)
+      tp('.l-projects', p >= .56 && p < .78)
+      tp('.l-certs', p >= .68 && p < .86)
+      tp('.l-interests', p >= .78 && p < .92)
+      tp('.l-contact', p >= .88)
     },
   })
 }
@@ -241,15 +278,41 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
       <div class="hlayer l-hero" aria-label="Introduction">
 
         <!-- Titlebar -->
-        <div class="vsc-bar vsc-bar--title" aria-hidden="true">
-          <span class="vsc-dot vsc-dot--r" />
-          <span class="vsc-dot vsc-dot--y" />
-          <span class="vsc-dot vsc-dot--g" />
-          <div class="vsc-tabs">
-            <span class="vsc-tab vsc-tab--on"><span aria-hidden="true">⚡</span>developer.ts</span>
-            <span class="vsc-tab">portfolio.config.ts</span>
+        <div class="vsc-bar vsc-bar--title">
+
+          <!-- Window controls -->
+          <div class="vsc-dots" aria-hidden="true">
+            <span class="vsc-dot vsc-dot--r" />
+            <span class="vsc-dot vsc-dot--y" />
+            <span class="vsc-dot vsc-dot--g" />
           </div>
-          <span class="vsc-wintitle" aria-hidden="true">Bruno Carvalho — Portfolio</span>
+
+          <!-- Tabs = navegação real -->
+          <nav class="vsc-tabs" aria-label="Site navigation">
+            <!-- Tab activo: esta página -->
+            <span class="vsc-tab vsc-tab--on" aria-current="page">
+              <span aria-hidden="true">⚡</span>
+              developer.ts
+            </span>
+
+            <!-- Tabs navegáveis -->
+            <RouterLink to="/projects" class="vsc-tab">
+              <span aria-hidden="true">📂</span>projects/
+            </RouterLink>
+            <RouterLink to="/certifications" class="vsc-tab">
+              <span aria-hidden="true">🏆</span>certifications/
+            </RouterLink>
+          </nav>
+
+          <!-- Accções -->
+          <div class="vsc-titlebar-actions">
+            <ThemeToggle />
+            <a :href="cvUrl" download class="vsc-cv-btn" aria-label="Download CV">
+              <i class="ti ti-download" aria-hidden="true" />
+              <span>CV</span>
+            </a>
+          </div>
+
         </div>
 
         <!-- Editor row -->
@@ -301,7 +364,7 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
             </div>
 
             <div class="hero-socials">
-              <SocialLink platform="github"   url="https://github.com/Ekkl3s1a"              show-label />
+              <SocialLink platform="github" url="https://github.com/Ekkl3s1a" show-label />
               <SocialLink platform="linkedin" url="https://linkedin.com/in/bruno-mr-carvalho" show-label />
             </div>
           </div>
@@ -312,7 +375,7 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
 ><span class="k">const</span> <span class="v">bruno</span><span class="o">:</span> <span class="t">Developer</span> <span class="o">=</span> {
   name<span class="o">:</span>      <span class="s">'Bruno Carvalho'</span><span class="o">,</span>
   location<span class="o">:</span>  <span class="s">'Portugal 🇵🇹'</span><span class="o">,</span>
-  frontend<span class="o">:</span>  [
+  stack<span class="o">:</span>  [
     <span class="s">'Angular'</span><span class="o">,</span> <span class="s">'Vue 3'</span><span class="o">,</span> <span class="s">'React'</span><span class="o">,</span>
     <span class="s">'TypeScript'</span><span class="o">,</span> <span class="s">'SCSS'</span><span class="o">,</span> <span class="s">'Vite'</span><span class="o">,</span>
     <span class="s">'FastAPI'</span><span class="o">,</span> <span class="s">'Nuxt'</span><span class="o">,</span> <span class="s">'Next.js'</span>
@@ -335,7 +398,7 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
       </div>
 
       <!-- ══ ABOUT ══════════════════════════════════════════════════ -->
-        
+
       <div class="hlayer l-about" aria-label="About">
         <div class="layer-badge">About me</div>
         <div class="about-grid">
@@ -369,42 +432,42 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
 
       <!-- ══ SKILLS ═════════════════════════════════════════════════ -->
       <div class="hlayer l-skills" aria-label="Tech stack">
-        <div class="layer-badge">Tech Stack</div>
-        <div class="skills-scene">
-          <span v-for="sk in skillsData" :key="sk.label" class="skill-tag" :class="`skill-tag--${sk.size}`" :style="{
-            left: sk.x + '%',
-            top: sk.y + '%',
-            color: sk.color,
-            borderColor: sk.color + '35',
-            '--rot': sk.rot + 'deg',
-            animationDelay: sk.delay + 's',
-          }">{{ sk.label }}</span>
+        <div class="layer-badge">Core Competencies</div>
+
+        <div class="skills-grid">
+          <div v-for="(group, i) in skillGroups" :key="group.title" class="skill-card" :style="{ '--i': i }">
+            <div class="skill-card__header">
+              <span class="skill-card__icon" aria-hidden="true">{{ group.icon }}</span>
+              <div>
+                <h3 class="skill-card__title">{{ group.title }}</h3>
+                <p class="skill-card__desc">{{ group.desc }}</p>
+              </div>
+            </div>
+            <div class="skill-card__tags">
+              <span v-for="skill in group.skills" :key="skill" class="skill-pill">{{ skill }}</span>
+            </div>
+          </div>
         </div>
       </div>
+
 
       <!-- ══ PROJECTS ═══════════════════════════════════════════════ -->
       <div class="hlayer l-projects" aria-label="Projects">
         <div class="layer-badge">Work</div>
         <div class="projects-scene">
-          <a
-          v-for="(repo, i) in previewProjects"
-          :key="repo.id"
-          :href="repo.html_url"
-          target="_blank" rel="noopener noreferrer"
-          class="project-card"
-          :style="{ '--i': i }"
-          >
-          <div class="project-card__top">
-            <span class="project-card__name">{{ repo.name }}</span>
-            <i class="ti ti-external-link project-card__ext" aria-hidden="true" />
-          </div>
-          <p class="project-card__desc">{{ repo.description || 'No description.' }}</p>
-          <div class="project-card__foot">
-            <span v-if="repo.language" class="project-card__lang">{{ repo.language }}</span>
-            <span v-if="repo.stargazers_count" class="project-card__stars">
-              <i class="ti ti-star" />{{ repo.stargazers_count }}
-            </span>
-          </div>
+          <a v-for="(repo, i) in previewProjects" :key="repo.id" :href="repo.html_url" target="_blank"
+            rel="noopener noreferrer" class="project-card" :style="{ '--i': i }">
+            <div class="project-card__top">
+              <span class="project-card__name">{{ repo.name }}</span>
+              <i class="ti ti-external-link project-card__ext" aria-hidden="true" />
+            </div>
+            <p class="project-card__desc">{{ repo.description || 'No description.' }}</p>
+            <div class="project-card__foot">
+              <span v-if="repo.language" class="project-card__lang">{{ repo.language }}</span>
+              <span v-if="repo.stargazers_count" class="project-card__stars">
+                <i class="ti ti-star" />{{ repo.stargazers_count }}
+              </span>
+            </div>
           </a>
         </div>
         <button class="see-all" @click="router.push('/projects')">
@@ -429,29 +492,87 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
         </button>
       </div>
 
+      <!-- ══ INTERESTS ══════════════════════════════════════════════ -->
+      <div class="hlayer l-interests" aria-label="Interests">
+        <div class="layer-badge">Outside the Code</div>
+
+        <div class="interests-wrap">
+
+          <div class="interests-group" style="--idelay: 0s">
+            <p class="interests-group__label">
+              <span aria-hidden="true">🏃</span> Sports & Health
+            </p>
+            <div class="interests-group__pills">
+              <span v-for="item in interests.sports" :key="item" class="interest-pill">{{ item }}</span>
+            </div>
+          </div>
+
+          <span class="interests-sep" aria-hidden="true">✦</span>
+
+          <div class="interests-group" style="--idelay: .25s">
+            <p class="interests-group__label">
+              <span aria-hidden="true">💻</span> Tech & Learning
+            </p>
+            <div class="interests-group__pills">
+              <span v-for="item in interests.tech" :key="item" class="interest-pill">{{ item }}</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <!-- ══ CONTACT ════════════════════════════════════════════════ -->
       <div class="hlayer l-contact" aria-label="Contact">
         <div class="contact-inner">
-          <p class="contact-depth">↓ 120m depth</p>
+
+          <p class="contact-depth" aria-hidden="true">↓ 120m</p>
+
           <h2 class="contact-heading">
             Let's build something<br>
             <span>together.</span>
           </h2>
+
           <p class="contact-sub">
             Open to full-time roles, freelance projects, and interesting collaborations.
           </p>
-          <div class="contact-links">
-            <a href="mailto:hello@brunocarvalho.dev" class="contact-email">
-              <i class="ti ti-mail" /> Send an email
+
+          <!-- Email CTA -->
+          <a href="mailto:carvalhobrunomr@gmail.com" class="contact-email">
+            <i class="ti ti-mail" aria-hidden="true" />
+            carvalhobrunomr@gmail.com
+          </a>
+
+          <!-- Social links -->
+          <div class="contact-socials">
+            <a href="https://github.com/Ekkl3s1a" target="_blank" rel="noopener noreferrer" class="contact-social"
+              aria-label="GitHub profile">
+              <i class="ti ti-brand-github" aria-hidden="true" />
+              GitHub
             </a>
             <a href="https://linkedin.com/in/bruno-mr-carvalho" target="_blank" rel="noopener noreferrer"
-              class="contact-social">
-              <i class="ti ti-brand-linkedin" />
+              class="contact-social" aria-label="LinkedIn profile">
+              <i class="ti ti-brand-linkedin" aria-hidden="true" />
+              LinkedIn
             </a>
-            <a href="https://github.com/Ekkl3s1a" target="_blank" rel="noopener noreferrer" class="contact-social">
-              <i class="ti ti-brand-github" />
+            <a href="https://marketplace.visualstudio.com/items?itemName=ekkl3s1a.ekkl3s1a-themes" target="_blank"
+              rel="noopener noreferrer" class="contact-social" aria-label="VS Code theme">
+              <i class="ti ti-brand-vscode" aria-hidden="true" />
+              VS Code Theme
             </a>
           </div>
+
+          <!-- Mini footer -->
+          <div class="contact-footer-line">
+            <span>© {{ year }} Bruno Carvalho</span>
+            <span class="contact-footer-sep">·</span>
+            <span>Built with <span class="contact-vue">Vue 3</span></span>
+            <span class="contact-footer-sep">·</span>
+            <button class="contact-surface-btn" aria-label="Back to top"
+              @click="() => $el.scrollTo({ top: 0, behavior: 'smooth' })">
+              ↑ Back to surface
+            </button>
+          </div>
+
         </div>
       </div>
 
@@ -467,7 +588,7 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   position: relative;
 
   &__driver {
-    height: 700vh;
+    height: 800vh;
     pointer-events: none;
   }
 
@@ -989,54 +1110,95 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
 }
 
 // ── Skills ───────────────────────────────────────────────────
-.skills-scene {
-  position: absolute;
-  inset: 0;
+.l-skills {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.5rem;
 }
 
-.skill-tag {
-  position: absolute;
-  font-family: var(--font-mono);
-  background: rgba(8, 33, 33, .7);
-  border: 1px solid currentColor;
-  border-radius: var(--radius-pill);
-  backdrop-filter: blur(10px);
-  white-space: nowrap;
-  animation: float-skill 3.5s ease-in-out infinite;
-  animation-delay: var(--delay, 0s);
-  cursor: default;
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 1060px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+    padding-right: .25rem;
+  }
+}
+
+.skill-card {
+  background: rgba(13, 46, 44, .78);
+  border: 1px solid rgba(45, 212, 191, .13);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(14px);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+  animation: float-bubble 4s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * 0.45s);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
 
   &:hover {
-    box-shadow: 0 0 16px currentColor;
-    transform: translateY(-4px) rotate(0deg) !important;
+    border-color: rgba(45, 212, 191, .3);
+    box-shadow: 0 0 24px rgba(45, 212, 191, .1);
   }
 
-  &--xl {
-    font-size: .95rem;
-    padding: .5rem 1.125rem;
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    gap: .875rem;
   }
 
-  &--lg {
-    font-size: .875rem;
-    padding: .45rem 1rem;
+  &__icon {
+    font-size: 1.4rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: .125rem;
   }
 
-  &--md {
-    font-size: .8rem;
-    padding: .4rem .875rem;
+  &__title {
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0 0 .25rem;
   }
 
-  &--sm {
-    font-size: .75rem;
-    padding: .35rem .75rem;
-    opacity: .85;
+  &__desc {
+    font-size: .78rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin: 0;
   }
 
-  &--xs {
-    font-size: .7rem;
-    padding: .3rem .625rem;
-    opacity: .7;
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .375rem;
+  }
+}
+
+.skill-pill {
+  font-family: var(--font-mono);
+  font-size: .73rem;
+  padding: .25rem .625rem;
+  border-radius: var(--radius-pill);
+  background: rgba(45, 212, 191, .07);
+  border: 1px solid rgba(45, 212, 191, .16);
+  color: var(--color-primary);
+  white-space: nowrap;
+  transition: background var(--transition-base);
+
+  &:hover {
+    background: rgba(45, 212, 191, .14);
   }
 }
 
@@ -1195,7 +1357,79 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   }
 }
 
-// ── Contact ───────────────────────────────────────────────────
+// ── Interests layer ───────────────────────────────────────────
+.l-interests {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.interests-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3.5rem;
+  flex-wrap: wrap;
+}
+
+.interests-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.125rem;
+  animation: float-bubble 3.8s ease-in-out infinite;
+  animation-delay: var(--idelay, 0s);
+
+  &__label {
+    font-family: var(--font-mono);
+    font-size: .75rem;
+    color: rgba(45, 212, 191, .55);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin: 0;
+  }
+
+  &__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .625rem;
+    justify-content: center;
+  }
+}
+
+.interests-sep {
+  font-size: 1.5rem;
+  color: rgba(45, 212, 191, .18);
+  align-self: center;
+
+  @media (max-width: 600px) {
+    display: none;
+  }
+}
+
+.interest-pill {
+  font-size: .875rem;
+  padding: .5rem 1.125rem;
+  background: rgba(13, 46, 44, .75);
+  border: 1px solid rgba(45, 212, 191, .14);
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(10px);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  transition: all var(--transition-base);
+
+  &:hover {
+    border-color: rgba(45, 212, 191, .35);
+    color: var(--color-text);
+    transform: translateY(-2px);
+  }
+}
+
+// ── Contact layer ─────────────────────────────────────────────
 .l-contact {
   display: flex;
   align-items: center;
@@ -1203,19 +1437,21 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
 }
 
 .contact-inner {
-  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
+  text-align: center;
   max-width: 560px;
+  padding: 0 1.5rem;
 }
 
 .contact-depth {
   font-family: var(--font-mono);
   font-size: .75rem;
-  color: rgba(45, 212, 191, .4);
+  color: rgba(45, 212, 191, .35);
   letter-spacing: .1em;
+  margin: 0;
 }
 
 .contact-heading {
@@ -1234,22 +1470,15 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   font-size: 1rem;
   color: var(--color-text-muted);
   line-height: 1.7;
-  max-width: 420px;
-}
-
-.contact-links {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: center;
+  max-width: 400px;
+  margin: 0;
 }
 
 .contact-email {
   display: inline-flex;
   align-items: center;
-  gap: .5rem;
-  padding: .75rem 1.75rem;
+  gap: .625rem;
+  padding: .875rem 2rem;
   border-radius: var(--radius-md);
   background: var(--color-primary);
   color: #082121;
@@ -1258,28 +1487,78 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   text-decoration: none;
   transition: all var(--transition-base);
 
+  i {
+    font-size: 18px;
+  }
+
   &:hover {
     background: var(--color-secondary);
     transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(45, 212, 191, .3);
   }
 }
 
+.contact-socials {
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .contact-social {
-  width: 44px;
-  height: 44px;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: .45rem;
+  padding: .5rem 1.125rem;
   border-radius: var(--radius-md);
-  border: 1px solid rgba(45, 212, 191, .25);
+  border: 1px solid rgba(45, 212, 191, .2);
   color: var(--color-text-muted);
   text-decoration: none;
-  font-size: 20px;
+  font-size: .875rem;
   transition: all var(--transition-base);
+
+  i {
+    font-size: 17px;
+  }
 
   &:hover {
     border-color: var(--color-primary);
     color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+}
+
+.contact-footer-line {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  color: rgba(45, 212, 191, .28);
+}
+
+.contact-footer-sep {
+  opacity: .4;
+}
+
+.contact-vue {
+  color: rgba(66, 211, 146, .55);
+}
+
+.contact-surface-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  color: rgba(45, 212, 191, .28);
+  transition: color .25s;
+  padding: 0;
+
+  &:hover {
+    color: rgba(45, 212, 191, .6);
   }
 }
 
@@ -1304,6 +1583,48 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
     background: rgba(45, 212, 191, .08);
   }
 }
+
+.vsc-titlebar-actions {
+  display: flex;
+  align-items: center;
+  gap: .375rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.vsc-cv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  border: 1px solid rgba(45, 212, 191, .2);
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: all var(--transition-base);
+
+  i {
+    font-size: 12px;
+  }
+
+  &:hover {
+    border-color: rgba(45, 212, 191, .5);
+    color: var(--color-primary);
+  }
+}
+
+// RouterLink active state nos tabs VS Code
+.vsc-tab.router-link-active,
+.vsc-tab.router-link-exact-active {
+  background: rgba(8, 33, 33, .98);
+  color: var(--color-text);
+  border-top: 1.5px solid var(--color-primary);
+  border-bottom: none;
+}
+
 
 // ── Keyframes ─────────────────────────────────────────────────
 @keyframes float-bubble {
