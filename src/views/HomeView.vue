@@ -8,9 +8,9 @@ import { useCertificationsStore } from '@/stores/certifications'
 import { getMorphTo } from '@/composables/useBackground3D'
 import BaseButton from '@/components/shared/BaseButton.vue'
 import SocialLink from '@/components/shared/SocialLink.vue'
-import { ExternalLink } from 'lucide-vue-next'
-import ThemeToggle from '@/components/shared/ThemeToggle.vue'
+import { useThemeStore } from '@/stores/theme'
 
+const themeStore = useThemeStore()
 const router = useRouter()
 const github = useGithubStore()
 const certs = useCertificationsStore()
@@ -27,64 +27,62 @@ const roles = [
   'VS Code Theme Creator',
 ]
 
-// ── Skills data ───────────────────────────────────────────────
-const skillsData = [
-  { label: 'Angular', color: '#E40035', x: 15, y: 25, size: 'xl', delay: 0, rot: -2 },
-  { label: 'Vue 3', color: '#42d392', x: 55, y: 30, size: 'xl', delay: .3, rot: 1 },
-  { label: 'React', color: '#61DAFB', x: 78, y: 22, size: 'lg', delay: .5, rot: -1 },
-  { label: 'TypeScript', color: '#3178C6', x: 29, y: 37, size: 'lg', delay: .1, rot: 2 },
-  { label: 'SCSS', color: '#CF649A', x: 62, y: 40, size: 'md', delay: .6, rot: -3 },
-  { label: 'Vite', color: '#BD34FE', x: 14, y: 50, size: 'md', delay: .4, rot: 1 },
-  { label: 'FastAPI', color: '#009485', x: 46, y: 58, size: 'md', delay: .2, rot: -1 },
-  { label: 'Express', color: '#aaaaaa', x: 82, y: 54, size: 'md', delay: .7, rot: 2 },
-  { label: 'Three.js', color: '#2DD4BF', x: 68, y: 68, size: 'sm', delay: .9, rot: 3 },
-  { label: 'GSAP', color: '#88CE02', x: 5, y: 62, size: 'sm', delay: 1.0, rot: -1 },
-  { label: 'Git', color: '#F05032', x: 30, y: 60, size: 'sm', delay: .5, rot: 1 },
-  { label: 'Node.js', color: '#339933', x: 87, y: 74, size: 'sm', delay: .8, rot: -2 },
-  { label: 'Figma', color: '#F24E1E', x: 15, y: 80, size: 'xs', delay: 1.2, rot: 2 },
-  { label: 'Docker', color: '#2496ED', x: 52, y: 85, size: 'xs', delay: 1.1, rot: -1 },
-  { label: 'Nuxt', color: '#00DC82', x: 72, y: 82, size: 'xs', delay: .6, rot: 1 },
-  { label: 'Next.js', color: '#ffffff', x: 32, y: 88, size: 'xs', delay: .7, rot: -2 },
-]
-
 const year = new Date().getFullYear()
 
 const skillGroups = [
   {
-    title: 'Programming & Frameworks',
-    icon: '⚡',
-    desc: 'Frontend-first, not framework-exclusive.',
+    title: 'Frontend', icon: '⚡',
+    cx: 20, cy: 38,
     skills: [
-      'Angular', 'Vue 3', 'React', 'TypeScript',
-      'JavaScript ES6+', 'HTML5', 'SCSS', 'Next.js', 'Nuxt 3',
+      { label: 'Angular', color: '#E40035', dx: 0, dy: -13, size: 'xl', delay: 0 },
+      { label: 'Vue 3', color: '#42d392', dx: 13, dy: -8, size: 'xl', delay: .25 },
+      { label: 'React', color: '#61DAFB', dx: 15, dy: 5, size: 'lg', delay: .45 },
+      { label: 'TypeScript', color: '#3178C6', dx: -4, dy: 13, size: 'lg', delay: .1 },
+      { label: 'SCSS', color: '#CF649A', dx: 11, dy: 15, size: 'md', delay: .55 },
+      { label: 'Vite', color: '#BD34FE', dx: -13, dy: 7, size: 'md', delay: .35 },
+      { label: 'Nuxt', color: '#00DC82', dx: 3, dy: 19, size: 'sm', delay: .65 },
+      { label: 'Next.js', color: '#ffffff', dx: -9, dy: -8, size: 'sm', delay: .7 },
     ],
   },
   {
-    title: 'Tools & Platforms',
-    icon: '🛠',
-    desc: 'From API design to CI/CD.',
+    title: 'Backend & APIs', icon: '🛠',
+    cx: 78, cy: 36,
     skills: [
-      'FastAPI', 'Express.js', 'Node.js', 'REST APIs',
-      'Git & GitHub', 'GitHub Actions', 'Vite', 'Docker', 'Figma',
+      { label: 'FastAPI', color: '#009485', dx: -11, dy: -13, size: 'lg', delay: .15 },
+      { label: 'Express', color: '#aaaaaa', dx: 10, dy: -9, size: 'md', delay: .6 },
+      { label: 'Node.js', color: '#339933', dx: 9, dy: 6, size: 'md', delay: .75 },
+      { label: 'REST APIs', color: '#FF8C69', dx: -6, dy: 12, size: 'sm', delay: .3 },
+      { label: 'Docker', color: '#2496ED', dx: 4, dy: 14, size: 'sm', delay: .95 },
+      { label: 'Git', color: '#F05032', dx: -13, dy: 2, size: 'sm', delay: .4 },
     ],
   },
   {
-    title: 'Professional Skills',
-    icon: '🎯',
-    desc: 'What makes the code matter.',
+    title: 'Dev Tools', icon: '🔧',
+    cx: 50, cy: 68,
     skills: [
-      'Responsive Design', 'Performance Optimization',
-      'Component Architecture', 'Clean Code',
-      'UI/UX Sensibility', 'Open Source',
+      { label: 'Figma', color: '#F24E1E', dx: -14, dy: -11, size: 'md', delay: .5 },
+      { label: 'Three.js', color: '#2DD4BF', dx: 7, dy: -11, size: 'sm', delay: .85 },
+      { label: 'GSAP', color: '#88CE02', dx: 15, dy: -2, size: 'sm', delay: .9 },
+      { label: 'VS Code', color: '#2DD4BF', dx: -2, dy: 9, size: 'md', delay: .2 },
+      { label: 'GitHub', color: '#ffffff', dx: -14, dy: 4, size: 'sm', delay: .55 },
     ],
   },
 ]
 
 // Interests data
-const interests = {
-  sports: ['⚽ Football', '🏓 Padel', '🏃 Running', '💪 Calisthenics'],
-  tech: ['🔓 Open Source', '🎨 VS Code Tooling', '🚀 New Frameworks', '🎙 Tech Podcasts'],
-}
+const interestBubbles = [
+  // ── Sports (esquerda: x 8–44%) ─────────────────────────────
+  { label: 'Football', emoji: '⚽', x: 14, y: 34, sz: 92, delay: 0, dur: 3.8 },
+  { label: 'Running', emoji: '🏃', x: 38, y: 40, sz: 76, delay: .2, dur: 4.0 },
+  { label: 'Calisthenics', emoji: '💪', x: 30, y: 62, sz: 88, delay: .35, dur: 4.2 },
+  { label: 'Padel', emoji: '🏓', x: 10, y: 68, sz: 68, delay: .55, dur: 3.5 },
+
+  // ── Tech (direita: x 58–90%) ─────────────────────────────
+  { label: 'Open Source', emoji: '🔓', x: 66, y: 28, sz: 92, delay: .1, dur: 4.1 },
+  { label: 'VS Code', emoji: '🎨', x: 85, y: 50, sz: 88, delay: .4, dur: 3.7 },
+  { label: 'New Frameworks', emoji: '🚀', x: 60, y: 64, sz: 68, delay: .6, dur: 4.3 },
+  { label: 'Tech Podcasts', emoji: '🎙', x: 80, y: 72, sz: 76, delay: .75, dur: 3.6 },
+]
 
 const displayText = ref('')
 const cursorOn = ref(true)
@@ -135,6 +133,10 @@ onBeforeUnmount(() => {
   clearInterval(cursorTimer)
   st?.kill()
 })
+
+function backToSurface() {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 
 function setupTimeline() {
   const morphTo = getMorphTo()
@@ -306,11 +308,26 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
 
           <!-- Accções -->
           <div class="vsc-titlebar-actions">
-            <ThemeToggle />
-            <a :href="cvUrl" download class="vsc-cv-btn" aria-label="Download CV">
-              <i class="ti ti-download" aria-hidden="true" />
+
+            <!-- Theme toggle -->
+            <button class="vsc-action vsc-action--toggle"
+              :aria-label="themeStore.theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+              :data-tip="themeStore.theme === 'dark' ? 'Light mode' : 'Dark mode'" @click="themeStore.toggleTheme()">
+              <Transition name="icon-swap" mode="out-in">
+                <i :key="themeStore.theme" :class="themeStore.theme === 'dark' ? 'ti ti-sun' : 'ti ti-moon-stars'"
+                  aria-hidden="true" />
+              </Transition>
+            </button>
+
+            <span class="vsc-action-sep" aria-hidden="true" />
+
+            <!-- Download CV -->
+            <a :href="cvUrl" download class="vsc-action vsc-action--cv" data-tip="Download CV"
+              aria-label="Download CV PDF">
+              <i class="ti ti-file-download" aria-hidden="true" />
               <span>CV</span>
             </a>
+
           </div>
 
         </div>
@@ -434,19 +451,27 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
       <div class="hlayer l-skills" aria-label="Tech stack">
         <div class="layer-badge">Core Competencies</div>
 
-        <div class="skills-grid">
-          <div v-for="(group, i) in skillGroups" :key="group.title" class="skill-card" :style="{ '--i': i }">
-            <div class="skill-card__header">
-              <span class="skill-card__icon" aria-hidden="true">{{ group.icon }}</span>
-              <div>
-                <h3 class="skill-card__title">{{ group.title }}</h3>
-                <p class="skill-card__desc">{{ group.desc }}</p>
-              </div>
+        <div class="skills-scene">
+          <template v-for="group in skillGroups" :key="group.title">
+
+            <!-- Group label (cluster centre) -->
+            <div class="skill-group-label" :style="{ left: group.cx + '%', top: group.cy + '%' }" aria-hidden="true">
+              <span>{{ group.icon }}</span>
+              <span>{{ group.title }}</span>
             </div>
-            <div class="skill-card__tags">
-              <span v-for="skill in group.skills" :key="skill" class="skill-pill">{{ skill }}</span>
-            </div>
-          </div>
+
+            <!-- Individual skills orbiting the group -->
+            <span v-for="skill in group.skills" :key="skill.label" class="skill-tag" :class="`skill-tag--${skill.size}`"
+              :style="{
+                left: (group.cx + skill.dx) + '%',
+                top: (group.cy + skill.dy) + '%',
+                color: skill.color,
+                borderColor: skill.color + '30',
+                '--rot': (skill.dx > 0 ? 1.5 : -1.5) + 'deg',
+                animationDelay: skill.delay + 's',
+              }">{{ skill.label }}</span>
+
+          </template>
         </div>
       </div>
 
@@ -493,32 +518,35 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
       </div>
 
       <!-- ══ INTERESTS ══════════════════════════════════════════════ -->
-      <div class="hlayer l-interests" aria-label="Interests">
-        <div class="layer-badge">Outside the Code</div>
+      <div class="hlayer l-interests" aria-label="Interests & hobbies">
 
-        <div class="interests-wrap">
-
-          <div class="interests-group" style="--idelay: 0s">
-            <p class="interests-group__label">
-              <span aria-hidden="true">🏃</span> Sports & Health
-            </p>
-            <div class="interests-group__pills">
-              <span v-for="item in interests.sports" :key="item" class="interest-pill">{{ item }}</span>
-            </div>
-          </div>
-
-          <span class="interests-sep" aria-hidden="true">✦</span>
-
-          <div class="interests-group" style="--idelay: .25s">
-            <p class="interests-group__label">
-              <span aria-hidden="true">💻</span> Tech & Learning
-            </p>
-            <div class="interests-group__pills">
-              <span v-for="item in interests.tech" :key="item" class="interest-pill">{{ item }}</span>
-            </div>
-          </div>
-
+        <!-- Sports label — centrado sobre o grupo -->
+        <div class="interests-zone" style="left:24%;top:14%" aria-hidden="true">
+          <i class="ti ti-heartbeat" /> Sports & Health
         </div>
+
+        <!-- Tech label — centrado sobre o grupo -->
+        <div class="interests-zone" style="left:74%;top:14%" aria-hidden="true">
+          <i class="ti ti-code" /> Tech & Learning
+        </div>
+
+        <!-- Divider line -->
+        <div class="interests-divider" aria-hidden="true" />
+
+        <!-- Bubbles -->
+        <div v-for="b in interestBubbles" :key="b.label" class="interest-bubble" :style="{
+          left: b.x + '%',
+          top: b.y + '%',
+          '--sz': b.sz + 'px',
+          '--dur': b.dur + 's',
+          '--delay': b.delay + 's',
+        }" role="listitem">
+          <div class="interest-bubble__circle">
+            <span class="interest-bubble__emoji" aria-hidden="true">{{ b.emoji }}</span>
+          </div>
+          <span class="interest-bubble__label">{{ b.label }}</span>
+        </div>
+
       </div>
 
       <!-- ══ CONTACT ════════════════════════════════════════════════ -->
@@ -567,8 +595,7 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
             <span class="contact-footer-sep">·</span>
             <span>Built with <span class="contact-vue">Vue 3</span></span>
             <span class="contact-footer-sep">·</span>
-            <button class="contact-surface-btn" aria-label="Back to top"
-              @click="() => $el.scrollTo({ top: 0, behavior: 'smooth' })">
+            <button class="contact-surface-btn" aria-label="Back to top" @click="backToSurface">
               ↑ Back to surface
             </button>
           </div>
@@ -1118,87 +1145,80 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   padding: 0 1.5rem;
 }
 
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-  width: 100%;
-  max-width: 1060px;
-
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-    max-width: 480px;
-    max-height: calc(100vh - 8rem);
-    overflow-y: auto;
-    padding-right: .25rem;
-  }
+.skills-scene {
+  position: absolute;
+  inset: 0;
 }
 
-.skill-card {
-  background: rgba(13, 46, 44, .78);
-  border: 1px solid rgba(45, 212, 191, .13);
-  border-radius: var(--radius-xl);
-  backdrop-filter: blur(14px);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.125rem;
-  animation: float-bubble 4s ease-in-out infinite;
-  animation-delay: calc(var(--i, 0) * 0.45s);
-  transition: border-color var(--transition-base), box-shadow var(--transition-base);
-
-  &:hover {
-    border-color: rgba(45, 212, 191, .3);
-    box-shadow: 0 0 24px rgba(45, 212, 191, .1);
-  }
-
-  &__header {
-    display: flex;
-    align-items: flex-start;
-    gap: .875rem;
-  }
-
-  &__icon {
-    font-size: 1.4rem;
-    line-height: 1;
-    flex-shrink: 0;
-    margin-top: .125rem;
-  }
-
-  &__title {
-    font-size: .9375rem;
-    font-weight: 600;
-    color: var(--color-text);
-    margin: 0 0 .25rem;
-  }
-
-  &__desc {
-    font-size: .78rem;
-    color: var(--color-text-muted);
-    line-height: 1.5;
-    margin: 0;
-  }
-
-  &__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .375rem;
-  }
-}
-
-.skill-pill {
+// Group label (minimal, centered on cluster)
+.skill-group-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
   font-family: var(--font-mono);
-  font-size: .73rem;
-  padding: .25rem .625rem;
+  font-size: .65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: rgba(45, 212, 191, .38);
+  background: rgba(8, 33, 33, .65);
+  border: 1px solid rgba(45, 212, 191, .1);
+  padding: .225rem .65rem;
   border-radius: var(--radius-pill);
-  background: rgba(45, 212, 191, .07);
-  border: 1px solid rgba(45, 212, 191, .16);
-  color: var(--color-primary);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  z-index: 2;
   white-space: nowrap;
-  transition: background var(--transition-base);
+}
+
+// Individual floating skill tags
+.skill-tag {
+  position: absolute;
+  transform: translate(-50%, -50%); // center on coordinates
+  font-family: var(--font-mono);
+  background: rgba(8, 33, 33, .72);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+  cursor: default;
+  animation: float-skill 3.5s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  transition: box-shadow var(--transition-base), transform .2s ease;
+  z-index: 1;
 
   &:hover {
-    background: rgba(45, 212, 191, .14);
+    box-shadow: 0 0 14px currentColor;
+    transform: translate(-50%, calc(-50% - 4px)) rotate(0deg) !important;
+  }
+
+  &--xl {
+    font-size: .93rem;
+    padding: .45rem 1.1rem;
+  }
+
+  &--lg {
+    font-size: .84rem;
+    padding: .4rem 1rem;
+  }
+
+  &--md {
+    font-size: .78rem;
+    padding: .35rem .875rem;
+  }
+
+  &--sm {
+    font-size: .72rem;
+    padding: .3rem .75rem;
+    opacity: .85;
+  }
+
+  &--xs {
+    font-size: .68rem;
+    padding: .25rem .625rem;
+    opacity: .7;
   }
 }
 
@@ -1359,73 +1379,93 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
 
 // ── Interests layer ───────────────────────────────────────────
 .l-interests {
+  position: absolute;
+  inset: 0;
+}
+
+.interests-zone {
+  position: absolute;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  color: rgba(45, 212, 191, .25);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  pointer-events: none;
+  white-space: nowrap;
+
+  i {
+    font-size: 11px;
+  }
+}
+
+.interests-divider {
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(to bottom,
+      transparent,
+      rgba(45, 212, 191, .1) 20%,
+      rgba(45, 212, 191, .1) 80%,
+      transparent);
+  pointer-events: none;
+}
+
+.interest-bubble {
+  position: absolute;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-}
+  gap: .45rem;
+  cursor: default;
 
-.interests-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3.5rem;
-  flex-wrap: wrap;
-}
+  &__circle {
+    width: var(--sz, 72px);
+    height: var(--sz, 72px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(13, 46, 44, .78);
+    border: 1px solid rgba(45, 212, 191, .16);
+    backdrop-filter: blur(12px);
+    animation: float-bubble var(--dur, 3.8s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+    transition: border-color .25s, box-shadow .25s, transform .2s;
+  }
 
-.interests-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.125rem;
-  animation: float-bubble 3.8s ease-in-out infinite;
-  animation-delay: var(--idelay, 0s);
+  &__emoji {
+    font-size: calc(var(--sz, 72px) * .42);
+    line-height: 1;
+    user-select: none;
+  }
 
   &__label {
     font-family: var(--font-mono);
-    font-size: .75rem;
-    color: rgba(45, 212, 191, .55);
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    margin: 0;
+    font-size: .7rem;
+    color: rgba(45, 212, 191, .38);
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity .2s, transform .2s;
+    pointer-events: none;
   }
 
-  &__pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .625rem;
-    justify-content: center;
+  &:hover &__circle {
+    border-color: rgba(45, 212, 191, .45);
+    box-shadow: 0 0 20px rgba(45, 212, 191, .18), inset 0 0 20px rgba(45, 212, 191, .05);
+    transform: scale(1.08);
   }
-}
 
-.interests-sep {
-  font-size: 1.5rem;
-  color: rgba(45, 212, 191, .18);
-  align-self: center;
-
-  @media (max-width: 600px) {
-    display: none;
-  }
-}
-
-.interest-pill {
-  font-size: .875rem;
-  padding: .5rem 1.125rem;
-  background: rgba(13, 46, 44, .75);
-  border: 1px solid rgba(45, 212, 191, .14);
-  border-radius: var(--radius-pill);
-  backdrop-filter: blur(10px);
-  color: var(--color-text-muted);
-  white-space: nowrap;
-  transition: all var(--transition-base);
-
-  &:hover {
-    border-color: rgba(45, 212, 191, .35);
-    color: var(--color-text);
-    transform: translateY(-2px);
+  &:hover &__label {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -1587,33 +1627,122 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
 .vsc-titlebar-actions {
   display: flex;
   align-items: center;
-  gap: .375rem;
+  gap: .125rem;
   margin-left: auto;
   flex-shrink: 0;
+  padding-right: 4px;
 }
 
-.vsc-cv-btn {
+.vsc-titlebar-actions {
+  display: flex;
+  align-items: center;
+  gap: .125rem;
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-right: 4px;
+}
+
+.vsc-action {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: .35rem;
-  font-size: 11px;
-  font-family: var(--font-mono);
-  font-weight: 500;
-  color: var(--color-text-muted);
-  border: 1px solid rgba(45, 212, 191, .2);
-  padding: 3px 10px;
-  border-radius: var(--radius-sm);
-  text-decoration: none;
-  transition: all var(--transition-base);
+  justify-content: center;
+  width: 30px;
+  height: 28px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: rgba(45, 212, 191, .45);
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  font-size: 15px;
 
-  i {
-    font-size: 12px;
+  // Tooltip via data-tip
+  &[data-tip]::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(8, 33, 33, .95);
+    border: 1px solid rgba(45, 212, 191, .18);
+    color: rgba(45, 212, 191, .75);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .15s .2s;
+    z-index: 100;
   }
 
   &:hover {
-    border-color: rgba(45, 212, 191, .5);
+    background: rgba(45, 212, 191, .1);
     color: var(--color-primary);
   }
+
+  &:hover::after {
+    opacity: 1;
+  }
+
+  &--toggle {
+
+    // Icon swap transition
+    i {
+      display: flex;
+    }
+  }
+
+  &--cv {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    width: auto;
+    padding: 0 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(45, 212, 191, .5);
+    text-decoration: none;
+    border: 1px solid rgba(45, 212, 191, .15);
+    transition: border-color .15s, background .15s, color .15s;
+
+    &:hover {
+      border-color: rgba(45, 212, 191, .4);
+      background: rgba(45, 212, 191, .08);
+      color: var(--color-primary);
+    }
+
+    i {
+      font-size: 13px;
+    }
+  }
+}
+
+.vsc-action-sep {
+  width: 1px;
+  height: 16px;
+  background: rgba(45, 212, 191, .1);
+  margin: 0 .25rem;
+  flex-shrink: 0;
+}
+
+// Icon swap transition
+.icon-swap-enter-active,
+.icon-swap-leave-active {
+  transition: opacity .12s ease, transform .12s ease;
+}
+
+.icon-swap-enter-from {
+  opacity: 0;
+  transform: rotate(-15deg) scale(.8);
+}
+
+.icon-swap-leave-to {
+  opacity: 0;
+  transform: rotate(15deg) scale(.8);
 }
 
 // RouterLink active state nos tabs VS Code
