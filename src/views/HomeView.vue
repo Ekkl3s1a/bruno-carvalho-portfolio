@@ -34,13 +34,13 @@ const skillGroups = [
     title: 'Frontend', icon: '⚡',
     cx: 20, cy: 38,
     skills: [
-      { label: 'Angular', color: '#E40035', dx: 0, dy: -13, size: 'xl', delay: 0 },
-      { label: 'Vue 3', color: '#42d392', dx: 13, dy: -8, size: 'xl', delay: .25 },
-      { label: 'React', color: '#61DAFB', dx: 15, dy: 5, size: 'lg', delay: .45 },
-      { label: 'TypeScript', color: '#3178C6', dx: -4, dy: 13, size: 'lg', delay: .1 },
-      { label: 'SCSS', color: '#CF649A', dx: 11, dy: 15, size: 'md', delay: .55 },
-      { label: 'Vite', color: '#BD34FE', dx: -13, dy: 7, size: 'md', delay: .35 },
-      { label: 'Nuxt', color: '#00DC82', dx: 3, dy: 19, size: 'sm', delay: .65 },
+      { label: 'Angular', color: '#E40035', dx: -2, dy: -13, size: 'xl', delay: 0 },
+      { label: 'Vue 3', color: '#42d392', dx: 8, dy: -8, size: 'xl', delay: .25 },
+      { label: 'React', color: '#61DAFB', dx: 5, dy: 4, size: 'lg', delay: .45 },
+      { label: 'TypeScript', color: '#3178C6', dx: -5, dy: 8, size: 'lg', delay: .1 },
+      { label: 'SCSS', color: '#CF649A', dx: 8, dy: 13, size: 'md', delay: .55 },
+      { label: 'Vite', color: '#BD34FE', dx: -10, dy: 4, size: 'md', delay: .35 },
+      { label: 'Nuxt', color: '#00DC82', dx: 0, dy: 17, size: 'sm', delay: .65 },
       { label: 'Next.js', color: '#ffffff', dx: -9, dy: -8, size: 'sm', delay: .7 },
     ],
   },
@@ -48,23 +48,23 @@ const skillGroups = [
     title: 'Backend & APIs', icon: '🛠',
     cx: 78, cy: 36,
     skills: [
-      { label: 'FastAPI', color: '#009485', dx: -11, dy: -13, size: 'lg', delay: .15 },
-      { label: 'Express', color: '#aaaaaa', dx: 10, dy: -9, size: 'md', delay: .6 },
-      { label: 'Node.js', color: '#339933', dx: 9, dy: 6, size: 'md', delay: .75 },
-      { label: 'REST APIs', color: '#FF8C69', dx: -6, dy: 12, size: 'sm', delay: .3 },
-      { label: 'Docker', color: '#2496ED', dx: 4, dy: 14, size: 'sm', delay: .95 },
-      { label: 'Git', color: '#F05032', dx: -13, dy: 2, size: 'sm', delay: .4 },
+      { label: 'FastAPI', color: '#009485', dx: -8, dy: -13, size: 'lg', delay: .15 },
+      { label: 'Express', color: '#aaaaaa', dx: 5, dy: -9, size: 'md', delay: .6 },
+      { label: 'Node.js', color: '#339933', dx: 8, dy: 3, size: 'md', delay: .75 },
+      { label: 'REST APIs', color: '#FF8C69', dx: -6, dy: 10, size: 'sm', delay: .3 },
+      { label: 'Docker', color: '#2496ED', dx: 2, dy: 10, size: 'sm', delay: .95 },
+      { label: 'Git', color: '#F05032', dx: -11, dy: 2, size: 'sm', delay: .4 },
     ],
   },
   {
     title: 'Dev Tools', icon: '🔧',
     cx: 50, cy: 68,
     skills: [
-      { label: 'Figma', color: '#F24E1E', dx: -14, dy: -11, size: 'md', delay: .5 },
-      { label: 'Three.js', color: '#2DD4BF', dx: 7, dy: -11, size: 'sm', delay: .85 },
-      { label: 'GSAP', color: '#88CE02', dx: 15, dy: -2, size: 'sm', delay: .9 },
+      { label: 'Figma', color: '#F24E1E', dx: -9, dy: -11, size: 'md', delay: .5 },
+      { label: 'Three.js', color: '#2DD4BF', dx: 3, dy: -11, size: 'sm', delay: .85 },
+      { label: 'GSAP', color: '#88CE02', dx: 9, dy: -2, size: 'sm', delay: .9 },
       { label: 'VS Code', color: '#2DD4BF', dx: -2, dy: 9, size: 'md', delay: .2 },
-      { label: 'GitHub', color: '#ffffff', dx: -14, dy: 4, size: 'sm', delay: .55 },
+      { label: 'GitHub', color: '#ffffff', dx: -12, dy: 4, size: 'sm', delay: .55 },
     ],
   },
 ]
@@ -313,10 +313,8 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
             <button class="vsc-action vsc-action--toggle"
               :aria-label="themeStore.theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
               :data-tip="themeStore.theme === 'dark' ? 'Light mode' : 'Dark mode'" @click="themeStore.toggleTheme()">
-              <Transition name="icon-swap" mode="out-in">
-                <i :key="themeStore.theme" :class="themeStore.theme === 'dark' ? 'ti ti-sun' : 'ti ti-moon-stars'"
-                  aria-hidden="true" />
-              </Transition>
+              <i v-if="themeStore.theme === 'dark'" class="ti ti-sun" aria-hidden="true" />
+              <i v-else class="ti ti-moon-stars" aria-hidden="true" />
             </button>
 
             <span class="vsc-action-sep" aria-hidden="true" />
@@ -1719,6 +1717,19 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
       font-size: 13px;
     }
   }
+
+  &--toggle {
+    &:active i {
+      transform: rotate(20deg) scale(.85);
+    }
+
+    i {
+      display: block;
+      font-size: 15px;
+      line-height: 1;
+      transition: transform .18s ease, opacity .12s ease;
+    }
+  }
 }
 
 .vsc-action-sep {
@@ -1727,22 +1738,6 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   background: rgba(45, 212, 191, .1);
   margin: 0 .25rem;
   flex-shrink: 0;
-}
-
-// Icon swap transition
-.icon-swap-enter-active,
-.icon-swap-leave-active {
-  transition: opacity .12s ease, transform .12s ease;
-}
-
-.icon-swap-enter-from {
-  opacity: 0;
-  transform: rotate(-15deg) scale(.8);
-}
-
-.icon-swap-leave-to {
-  opacity: 0;
-  transform: rotate(15deg) scale(.8);
 }
 
 // RouterLink active state nos tabs VS Code
