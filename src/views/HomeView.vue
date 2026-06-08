@@ -313,8 +313,20 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
             <button class="vsc-action vsc-action--toggle"
               :aria-label="themeStore.theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
               :data-tip="themeStore.theme === 'dark' ? 'Light mode' : 'Dark mode'" @click="themeStore.toggleTheme()">
-              <i v-if="themeStore.theme === 'dark'" class="ti ti-sun" aria-hidden="true" />
-              <i v-else class="ti ti-moon-stars" aria-hidden="true" />
+              <!-- Sol (dark mode → trocar para light) -->
+              <svg v-if="themeStore.theme === 'dark'" xmlns="http://www.w3.org/2000/svg" width="15" height="15"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" />
+                <path
+                  d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+              </svg>
+              <!-- Lua (light mode → trocar para dark) -->
+              <svg v-else xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                aria-hidden="true">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9" />
+              </svg>
             </button>
 
             <span class="vsc-action-sep" aria-hidden="true" />
@@ -797,6 +809,8 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   align-items: flex-end;
   flex: 1;
   overflow: hidden;
+  min-width: 0;
+  max-width: 60%;
 }
 
 .vsc-tab {
@@ -1628,15 +1642,7 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   gap: .125rem;
   margin-left: auto;
   flex-shrink: 0;
-  padding-right: 4px;
-}
-
-.vsc-titlebar-actions {
-  display: flex;
-  align-items: center;
-  gap: .125rem;
-  margin-left: auto;
-  flex-shrink: 0;
+  min-width: max-content;
   padding-right: 4px;
 }
 
@@ -1650,10 +1656,11 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   border-radius: 4px;
   border: none;
   background: transparent;
-  color: rgba(45, 212, 191, .45);
+  color: rgba(45, 212, 191, .65);
   cursor: pointer;
   transition: background .15s, color .15s;
   font-size: 15px;
+  overflow: visible;
 
   // Tooltip via data-tip
   &[data-tip]::after {
@@ -1683,14 +1690,6 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
 
   &:hover::after {
     opacity: 1;
-  }
-
-  &--toggle {
-
-    // Icon swap transition
-    i {
-      display: flex;
-    }
   }
 
   &--cv {
@@ -1724,10 +1723,10 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
     }
 
     i {
-      display: block;
       font-size: 15px;
+      font-style: normal;
       line-height: 1;
-      transition: transform .18s ease, opacity .12s ease;
+      transition: transform .18s ease;
     }
   }
 }
