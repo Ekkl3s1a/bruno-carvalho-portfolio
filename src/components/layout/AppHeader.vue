@@ -25,11 +25,8 @@ interface NavLink {
 
 const navLinks = [
   { label: 'Home',           to: '/',                hash: '' },
-  { label: 'About',          to: '/#about',          hash: '#about' },
-  { label: 'Skills',         to: '/#skills',         hash: '#skills' },
   { label: 'Projects',       to: '/projects',        hash: '' },
-  { label: 'Certifications', to: '/certifications',  hash: '' },
-  { label: 'Contact',        to: '/#contact',        hash: '#contact' },
+  { label: 'Certifications', to: '/certifications',  hash: '' }
 ]
 
 // ── Active state manual ───────────────────────────────────────
