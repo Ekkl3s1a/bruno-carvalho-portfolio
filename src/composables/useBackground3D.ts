@@ -1,7 +1,8 @@
-import { onMounted, onBeforeUnmount, type Ref } from 'vue'
+import { watch, onMounted, onBeforeUnmount, type Ref } from 'vue'
 import * as THREE from 'three'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useThemeStore } from '@/stores/theme'
 
 // ── Constants ─────────────────────────────────────────────────
 const N = 4500   // particle count
@@ -13,15 +14,15 @@ let _globalMorphTo: ((id: SectionId) => void) | null = null
 
 // Framework cluster colours
 const CLR = {
-  teal:   new THREE.Color('#2DD4BF'),
-  teal2:  new THREE.Color('#7AE7DA'),
-  teal3:  new THREE.Color('#113d3a'),
-  angular:new THREE.Color('#E40035'),
-  vue:    new THREE.Color('#42d392'),
-  react:  new THREE.Color('#61DAFB'),
-  ts:     new THREE.Color('#3178C6'),
-  back:   new THREE.Color('#A78BFA'),
-  gold:   new THREE.Color('#FBBF24'),
+  teal: new THREE.Color('#2DD4BF'),
+  teal2: new THREE.Color('#7AE7DA'),
+  teal3: new THREE.Color('#113d3a'),
+  angular: new THREE.Color('#E40035'),
+  vue: new THREE.Color('#42d392'),
+  react: new THREE.Color('#61DAFB'),
+  ts: new THREE.Color('#3178C6'),
+  back: new THREE.Color('#A78BFA'),
+  gold: new THREE.Color('#FBBF24'),
 }
 
 // ── Position generators ───────────────────────────────────────
@@ -29,9 +30,9 @@ const CLR = {
 function genHero(): Float32Array {
   const p = new Float32Array(N * 3)
   for (let i = 0; i < N; i++) {
-    p[i*3]   = (Math.random() - .5) * 12
-    p[i*3+1] = (Math.random() - .5) * 9
-    p[i*3+2] = (Math.random() - .5) * 4
+    p[i * 3] = (Math.random() - .5) * 12
+    p[i * 3 + 1] = (Math.random() - .5) * 9
+    p[i * 3 + 2] = (Math.random() - .5) * 4
   }
   return p
 }
@@ -39,12 +40,12 @@ function genHero(): Float32Array {
 function genAbout(): Float32Array {
   const p = new Float32Array(N * 3)
   for (let i = 0; i < N; i++) {
-    const theta  = Math.random() * Math.PI * 2
-    const phi    = Math.acos(2 * Math.random() - 1)
-    const r      = 2.8 + Math.random() * 1.2
-    p[i*3]   = r * Math.sin(phi) * Math.cos(theta)
-    p[i*3+1] = r * Math.sin(phi) * Math.sin(theta)
-    p[i*3+2] = r * Math.cos(phi)
+    const theta = Math.random() * Math.PI * 2
+    const phi = Math.acos(2 * Math.random() - 1)
+    const r = 2.8 + Math.random() * 1.2
+    p[i * 3] = r * Math.sin(phi) * Math.cos(theta)
+    p[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta)
+    p[i * 3 + 2] = r * Math.cos(phi)
   }
   return p
 }
@@ -52,28 +53,28 @@ function genAbout(): Float32Array {
 function genSkills(): Float32Array {
   const p = new Float32Array(N * 3)
   // 5 clusters: Angular, Vue, React, TypeScript, Backend
-  const centres = [[-3,1.5,0],[0,2.2,0],[3,1.5,0],[-2,-1.2,0],[2,-1.2,0]]
-  const each    = Math.floor(N / centres.length)
+  const centres = [[-3, 1.5, 0], [0, 2.2, 0], [3, 1.5, 0], [-2, -1.2, 0], [2, -1.2, 0]]
+  const each = Math.floor(N / centres.length)
   for (let c = 0; c < centres.length; c++) {
     for (let i = 0; i < each; i++) {
       const idx = (c * each + i) * 3
-      p[idx]   = centres[c][0] + (Math.random() - .5) * .9
-      p[idx+1] = centres[c][1] + (Math.random() - .5) * .9
-      p[idx+2] = centres[c][2] + (Math.random() - .5) * .5
+      p[idx] = centres[c][0] + (Math.random() - .5) * .9
+      p[idx + 1] = centres[c][1] + (Math.random() - .5) * .9
+      p[idx + 2] = centres[c][2] + (Math.random() - .5) * .5
     }
   }
   return p
 }
 
 function genProjects(): Float32Array {
-  const p    = new Float32Array(N * 3)
+  const p = new Float32Array(N * 3)
   const cols = 52, rows = 7
-  const sp   = 0.19
+  const sp = 0.19
   for (let i = 0; i < N; i++) {
-    const gi   = i % (cols * rows)
-    p[i*3]   = (gi % cols - cols/2) * sp
-    p[i*3+1] = (Math.floor(gi / cols) - rows/2) * sp * 1.6
-    p[i*3+2] = (Math.random() - .5) * .35
+    const gi = i % (cols * rows)
+    p[i * 3] = (gi % cols - cols / 2) * sp
+    p[i * 3 + 1] = (Math.floor(gi / cols) - rows / 2) * sp * 1.6
+    p[i * 3 + 2] = (Math.random() - .5) * .35
   }
   return p
 }
@@ -85,7 +86,7 @@ function genCertifications(): Float32Array {
     const x = (t - .5) * 8
     const y = Math.sin(t * Math.PI) * 1.4
     const z = (Math.random() - .5) * .6
-    p[i*3] = x; p[i*3+1] = y; p[i*3+2] = z
+    p[i * 3] = x; p[i * 3 + 1] = y; p[i * 3 + 2] = z
   }
   return p
 }
@@ -93,12 +94,12 @@ function genCertifications(): Float32Array {
 function genContact(): Float32Array {
   const p = new Float32Array(N * 3)
   for (let i = 0; i < N; i++) {
-    const t     = i / N
+    const t = i / N
     const angle = t * Math.PI * 16
-    const r     = (1 - t) * 3.5
-    p[i*3]   = Math.cos(angle) * r
-    p[i*3+1] = Math.sin(angle) * r
-    p[i*3+2] = (t - .5) * 2
+    const r = (1 - t) * 3.5
+    p[i * 3] = Math.cos(angle) * r
+    p[i * 3 + 1] = Math.sin(angle) * r
+    p[i * 3 + 2] = (t - .5) * 2
   }
   return p
 }
@@ -108,22 +109,22 @@ function genContact(): Float32Array {
 function colHero(): Float32Array {
   const c = new Float32Array(N * 3)
   for (let i = 0; i < N; i++) {
-    const m   = Math.random()
+    const m = Math.random()
     const col = m < .55 ? CLR.teal : m < .78 ? CLR.teal2 : CLR.teal3
-    c[i*3] = col.r; c[i*3+1] = col.g; c[i*3+2] = col.b
+    c[i * 3] = col.r; c[i * 3 + 1] = col.g; c[i * 3 + 2] = col.b
   }
   return c
 }
 
 function colSkills(): Float32Array {
-  const c    = new Float32Array(N * 3)
+  const c = new Float32Array(N * 3)
   const each = Math.floor(N / 5)
   const palette = [CLR.angular, CLR.vue, CLR.react, CLR.ts, CLR.back]
   for (let ci = 0; ci < 5; ci++) {
     const col = palette[ci]
     for (let i = 0; i < each; i++) {
       const idx = (ci * each + i) * 3
-      c[idx] = col.r; c[idx+1] = col.g; c[idx+2] = col.b
+      c[idx] = col.r; c[idx + 1] = col.g; c[idx + 2] = col.b
     }
   }
   return c
@@ -132,9 +133,9 @@ function colSkills(): Float32Array {
 function colCerts(): Float32Array {
   const c = new Float32Array(N * 3)
   for (let i = 0; i < N; i++) {
-    const t   = i / N
+    const t = i / N
     const col = t < .5 ? CLR.teal : CLR.gold
-    c[i*3] = col.r; c[i*3+1] = col.g; c[i*3+2] = col.b
+    c[i * 3] = col.r; c[i * 3 + 1] = col.g; c[i * 3 + 2] = col.b
   }
   return c
 }
@@ -147,13 +148,13 @@ export function getMorphTo() {
 
 export function useBackground3D(canvasRef: Ref<HTMLCanvasElement | undefined>) {
   // Three.js handles
-  let scene:    THREE.Scene
-  let camera:   THREE.PerspectiveCamera
+  let scene: THREE.Scene
+  let camera: THREE.PerspectiveCamera
   let renderer: THREE.WebGLRenderer
-  let geo:      THREE.BufferGeometry
-  let mat:      THREE.ShaderMaterial
-  let pts:      THREE.Points
-  let rafId:    number
+  let geo: THREE.BufferGeometry
+  let mat: THREE.ShaderMaterial
+  let pts: THREE.Points
+  let rafId: number
   let time = 0
 
   // Morph buffers
@@ -164,17 +165,17 @@ export function useBackground3D(canvasRef: Ref<HTMLCanvasElement | undefined>) {
 
   // Pre-bake all states
   const STATES: Record<SectionId, Float32Array> = {
-    hero:           genHero(),
-    about:          genAbout(),
-    skills:         genSkills(),
-    projects:       genProjects(),
+    hero: genHero(),
+    about: genAbout(),
+    skills: genSkills(),
+    projects: genProjects(),
     certifications: genCertifications(),
-    contact:        genContact(),
+    contact: genContact(),
   }
 
   const COLOURS: Partial<Record<SectionId, Float32Array>> = {
-    hero:           colHero(),
-    skills:         colSkills(),
+    hero: colHero(),
+    skills: colSkills(),
     certifications: colCerts(),
   }
 
@@ -182,8 +183,8 @@ export function useBackground3D(canvasRef: Ref<HTMLCanvasElement | undefined>) {
   function init(canvas: HTMLCanvasElement) {
     const W = window.innerWidth, H = window.innerHeight
 
-    scene    = new THREE.Scene()
-    camera   = new THREE.PerspectiveCamera(75, W/H, .1, 100)
+    scene = new THREE.Scene()
+    camera = new THREE.PerspectiveCamera(75, W / H, .1, 100)
     camera.position.z = 3
 
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true })
@@ -198,18 +199,18 @@ export function useBackground3D(canvasRef: Ref<HTMLCanvasElement | undefined>) {
     geo.setAttribute('position', new THREE.BufferAttribute(posNow.slice(), 3))
 
     const heroCol = colHero()
-    geo.setAttribute('color',    new THREE.BufferAttribute(heroCol, 3))
+    geo.setAttribute('color', new THREE.BufferAttribute(heroCol, 3))
 
     // Custom shader — soft circle, additive blending
     mat = new THREE.ShaderMaterial({
       transparent: true,
-      depthWrite:  false,
-      blending:    THREE.AdditiveBlending,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
       vertexColors: true,
       uniforms: {
-        uSize:    { value: 2.8 },
+        uSize: { value: 2.8 },
         uOpacity: { value: .75 },
-        uTime:    { value: 0 },
+        uTime: { value: 0 },
       },
       vertexShader: /* glsl */`
         uniform float uSize;
@@ -241,6 +242,17 @@ export function useBackground3D(canvasRef: Ref<HTMLCanvasElement | undefined>) {
     window.addEventListener('resize', onResize, { passive: true })
   }
 
+  const themeStore = useThemeStore()
+  watch(
+    () => themeStore.theme,
+    (t) => {
+      if (mat?.uniforms) {
+        mat.uniforms.uOpacity.value = t === 'light' ? 0.55 : 0.75
+      }
+    },
+    { immediate: true }
+  )
+
   // ── Morph to section ────────────────────────────────────────
   function morphTo(id: SectionId) {
     gsap.killTweensOf(morphObj)
@@ -270,21 +282,21 @@ export function useBackground3D(canvasRef: Ref<HTMLCanvasElement | undefined>) {
   // ── ScrollTrigger wiring ─────────────────────────────────────
   function setupScrollTriggers() {
     const sections: Array<{ id: SectionId; sel: string }> = [
-      { id: 'hero',           sel: '#hero' },
-      { id: 'about',          sel: '#about' },
-      { id: 'skills',         sel: '#skills' },
-      { id: 'projects',       sel: '#projects' },
+      { id: 'hero', sel: '#hero' },
+      { id: 'about', sel: '#about' },
+      { id: 'skills', sel: '#skills' },
+      { id: 'projects', sel: '#projects' },
       { id: 'certifications', sel: '#certifications' },
-      { id: 'contact',        sel: '#contact' },
+      { id: 'contact', sel: '#contact' },
     ]
 
     sections.forEach(({ id, sel }) => {
       if (!document.querySelector(sel)) return
       ScrollTrigger.create({
-        trigger:      sel,
-        start:        'top 58%',
-        onEnter:      () => morphTo(id),
-        onEnterBack:  () => morphTo(id),
+        trigger: sel,
+        start: 'top 58%',
+        onEnter: () => morphTo(id),
+        onEnterBack: () => morphTo(id),
       })
     })
 
@@ -296,10 +308,10 @@ export function useBackground3D(canvasRef: Ref<HTMLCanvasElement | undefined>) {
         y: -.6,
         ease: 'none',
         scrollTrigger: {
-          trigger:    '#hero',
-          start:      'top top',
-          end:        'bottom top',
-          scrub:      1.2,
+          trigger: '#hero',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.2,
           onUpdate: (self) => {
             if (mat?.uniforms) {
               mat.uniforms.uOpacity.value = .75 - self.progress * .22

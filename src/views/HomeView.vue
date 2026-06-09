@@ -34,12 +34,12 @@ const skillGroups = [
     title: 'Frontend', icon: '⚡',
     cx: 20, cy: 38,
     skills: [
-      { label: 'Angular', color: '#E40035', dx: -2, dy: -13, size: 'xl', delay: 0 },
-      { label: 'Vue 3', color: '#42d392', dx: 8, dy: -8, size: 'xl', delay: .25 },
-      { label: 'React', color: '#61DAFB', dx: 5, dy: 4, size: 'lg', delay: .45 },
-      { label: 'TypeScript', color: '#3178C6', dx: -5, dy: 8, size: 'lg', delay: .1 },
-      { label: 'SCSS', color: '#CF649A', dx: 8, dy: 13, size: 'md', delay: .55 },
-      { label: 'Vite', color: '#BD34FE', dx: -10, dy: 4, size: 'md', delay: .35 },
+      { label: 'Angular', color: '#E40035', dx: 0, dy: -13, size: 'xl', delay: 0 },
+      { label: 'Vue 3', color: '#42d392', dx: 10, dy: -8, size: 'xl', delay: .25 },
+      { label: 'React', color: '#61DAFB', dx: 8, dy: 4, size: 'lg', delay: .45 },
+      { label: 'TypeScript', color: '#3178C6', dx: -5, dy: 10, size: 'lg', delay: .1 },
+      { label: 'SCSS', color: '#CF649A', dx: 5, dy: 13, size: 'md', delay: .55 },
+      { label: 'Vite', color: '#BD34FE', dx: -10, dy: 3, size: 'md', delay: .35 },
       { label: 'Nuxt', color: '#00DC82', dx: 0, dy: 17, size: 'sm', delay: .65 },
       { label: 'Next.js', color: '#ffffff', dx: -9, dy: -8, size: 'sm', delay: .7 },
     ],
@@ -48,23 +48,23 @@ const skillGroups = [
     title: 'Backend & APIs', icon: '🛠',
     cx: 78, cy: 36,
     skills: [
-      { label: 'FastAPI', color: '#009485', dx: -8, dy: -13, size: 'lg', delay: .15 },
+      { label: 'FastAPI', color: '#009485', dx: -6, dy: -10, size: 'lg', delay: .15 },
       { label: 'Express', color: '#aaaaaa', dx: 5, dy: -9, size: 'md', delay: .6 },
-      { label: 'Node.js', color: '#339933', dx: 8, dy: 3, size: 'md', delay: .75 },
-      { label: 'REST APIs', color: '#FF8C69', dx: -6, dy: 10, size: 'sm', delay: .3 },
-      { label: 'Docker', color: '#2496ED', dx: 2, dy: 10, size: 'sm', delay: .95 },
-      { label: 'Git', color: '#F05032', dx: -11, dy: 2, size: 'sm', delay: .4 },
+      { label: 'Node.js', color: '#339933', dx: 10, dy: 2, size: 'md', delay: .75 },
+      { label: 'REST APIs', color: '#FF8C69', dx: -3, dy: 10, size: 'sm', delay: .3 },
+      { label: 'Docker', color: '#2496ED', dx: 5, dy: 10, size: 'sm', delay: .95 },
+      { label: 'Git', color: '#F05032', dx: -10, dy: 2, size: 'sm', delay: .4 },
     ],
   },
   {
     title: 'Dev Tools', icon: '🔧',
     cx: 50, cy: 68,
     skills: [
-      { label: 'Figma', color: '#F24E1E', dx: -9, dy: -11, size: 'md', delay: .5 },
-      { label: 'Three.js', color: '#2DD4BF', dx: 3, dy: -11, size: 'sm', delay: .85 },
-      { label: 'GSAP', color: '#88CE02', dx: 9, dy: -2, size: 'sm', delay: .9 },
-      { label: 'VS Code', color: '#2DD4BF', dx: -2, dy: 9, size: 'md', delay: .2 },
-      { label: 'GitHub', color: '#ffffff', dx: -12, dy: 4, size: 'sm', delay: .55 },
+      { label: 'Figma', color: '#F24E1E', dx: -5, dy: -8, size: 'md', delay: .5 },
+      { label: 'Three.js', color: '#2DD4BF', dx: 3, dy: -8, size: 'sm', delay: .85 },
+      { label: 'GSAP', color: '#88CE02', dx: 8, dy: 0, size: 'sm', delay: .9 },
+      { label: 'VS Code', color: '#2DD4BF', dx: 1, dy: 9, size: 'md', delay: .2 },
+      { label: 'GitHub', color: '#ffffff', dx: -8, dy: 4, size: 'sm', delay: .55 },
     ],
   },
 ]
@@ -1188,7 +1188,7 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
 // Individual floating skill tags
 .skill-tag {
   position: absolute;
-  transform: translate(-50%, -50%); // center on coordinates
+  translate: -50% -50%;
   font-family: var(--font-mono);
   background: rgba(8, 33, 33, .72);
   border: 1px solid currentColor;
@@ -1198,12 +1198,20 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   cursor: default;
   animation: float-skill 3.5s ease-in-out infinite;
   animation-delay: var(--delay, 0s);
-  transition: box-shadow var(--transition-base), transform .2s ease;
+  transition:
+    transform .28s cubic-bezier(.34, 1.4, .64, 1),
+    box-shadow .22s ease,
+    opacity .15s ease;
   z-index: 1;
 
   &:hover {
-    box-shadow: 0 0 14px currentColor;
-    transform: translate(-50%, calc(-50% - 4px)) rotate(0deg) !important;
+    animation-play-state: paused;
+    box-shadow:
+      0 6px 20px -4px currentColor,
+      0 2px 8px -2px rgba(0, 0, 0, .3);
+    z-index: 3;
+    opacity: 1 !important;
+    transform: translateY(-6px) scale(1.05);
   }
 
   &--xl {
@@ -1770,7 +1778,7 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   }
 
   50% {
-    transform: translateY(-7px) rotate(calc(var(--rot, -1deg) + 2deg));
+    transform: translateY(-5px) rotate(calc(var(--rot, -1deg) + 1.5deg));
   }
 }
 
@@ -1807,6 +1815,339 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   100% {
     opacity: 0;
     pointer-events: none;
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+// LIGHT THEME — override de todos os valores hardcoded
+// ════════════════════════════════════════════════════════════
+[data-theme="light"] {
+
+  // ── Atmosfera ────────────────────────────────────────────
+  .home__caustics {
+    background:
+      radial-gradient(ellipse at 18% 48%, rgba(15, 118, 110, .07) 0%, transparent 52%),
+      radial-gradient(ellipse at 78% 22%, rgba(15, 118, 110, .08) 0%, transparent 52%),
+      radial-gradient(ellipse at 52% 78%, rgba(15, 118, 110, .05) 0%, transparent 52%);
+  }
+
+  .home__vignette {
+    // Em light mode o vignette é uma névoa clara teal, não escura
+    background: radial-gradient(ellipse at 50% 110%,
+        rgba(200, 240, 235, .55) 0%,
+        rgba(225, 245, 242, .25) 45%,
+        transparent 72%);
+  }
+
+  .home__surface {
+    background: linear-gradient(180deg,
+        rgba(15, 118, 110, .10) 0%,
+        rgba(232, 247, 244, .35) 30%,
+        transparent 60%);
+  }
+
+  .home__depth {
+    color: rgba(15, 118, 110, .55);
+  }
+
+  // ── VS Code titlebar ─────────────────────────────────────
+  .vsc-bar--title {
+    background: rgba(232, 247, 244, .97);
+    border-bottom-color: rgba(15, 118, 110, .14);
+  }
+
+  .vsc-bar--activity {
+    background: rgba(214, 239, 236, .97);
+    border-right-color: rgba(15, 118, 110, .1);
+
+    i {
+      color: rgba(15, 118, 110, .5);
+
+      &:first-child {
+        color: #0f766e;
+      }
+
+      &:hover {
+        color: #082121;
+      }
+    }
+  }
+
+  .vsc-tab {
+    color: #4a8880;
+    border-right-color: rgba(15, 118, 110, .1);
+
+    &--on {
+      background: rgba(255, 255, 255, .98);
+      color: #082121;
+      border-top-color: #0f766e;
+    }
+  }
+
+  .vsc-gutter {
+    color: rgba(15, 118, 110, .22);
+  }
+
+  .vsc-code {
+    background: rgba(247, 253, 252, .75);
+    border-left-color: rgba(15, 118, 110, .1);
+
+    .v {
+      color: #082121;
+    }
+
+    .o {
+      color: #4a8880;
+    }
+
+    .s {
+      color: #0f766e;
+    }
+  }
+
+  // ── Actions ──────────────────────────────────────────────
+  .vsc-action {
+    color: rgba(15, 118, 110, .7);
+
+    &:hover {
+      background: rgba(15, 118, 110, .08);
+      color: #0f766e;
+    }
+
+    &[data-tip]::after {
+      background: rgba(240, 251, 249, .97);
+      border-color: rgba(15, 118, 110, .2);
+      color: #0f766e;
+    }
+  }
+
+  .vsc-action--cv {
+    color: rgba(15, 118, 110, .65);
+    border-color: rgba(15, 118, 110, .2);
+
+    &:hover {
+      border-color: rgba(15, 118, 110, .45);
+      background: rgba(15, 118, 110, .06);
+      color: #0f766e;
+    }
+  }
+
+  .vsc-action-sep {
+    background: rgba(15, 118, 110, .14);
+  }
+
+  // RouterLink active tab
+  .vsc-tab.router-link-active,
+  .vsc-tab.router-link-exact-active {
+    background: rgba(255, 255, 255, .98);
+    color: #082121;
+    border-top-color: #0f766e;
+  }
+
+  // ── Layer badges ─────────────────────────────────────────
+  .layer-badge {
+    color: rgba(15, 118, 110, .6);
+  }
+
+  // ── Hero ─────────────────────────────────────────────────
+  .hero-role {
+    color: #0f766e;
+  }
+
+  .hero-bio {
+    color: #2e5856;
+
+    strong {
+      color: #082121;
+    }
+  }
+
+  .hero-link {
+    color: #0f766e;
+  }
+
+  .hero-cursor {
+    color: #0f766e;
+  }
+
+  .social-link {
+    color: #2e5856;
+    border-color: rgba(15, 118, 110, .2);
+
+    &:hover {
+      border-color: #0f766e;
+      color: #0f766e;
+    }
+  }
+
+  .btn-outlined:hover {
+    background: rgba(15, 118, 110, .07);
+  }
+
+  // ── About ────────────────────────────────────────────────
+  .glass-card {
+    background: rgba(255, 255, 255, .90);
+    border-color: rgba(15, 118, 110, .16);
+    color: #2e5856;
+
+    strong {
+      color: #082121;
+    }
+  }
+
+  .stat-bubble {
+    background: rgba(242, 252, 250, .92);
+    border-color: rgba(15, 118, 110, .2);
+
+    &__lbl {
+      color: #4a8880;
+    }
+  }
+
+  // ── Skills ───────────────────────────────────────────────
+  .skill-group-label {
+    background: rgba(255, 255, 255, .90);
+    border-color: rgba(15, 118, 110, .16);
+    color: #0f766e;
+  }
+
+  .skill-tag {
+    background: rgba(255, 255, 255, .88);
+
+    &:hover {
+      box-shadow:
+        0 6px 20px -4px currentColor,
+        0 2px 8px -2px rgba(0, 0, 0, .08);
+    }
+  }
+
+  // ── Projects ─────────────────────────────────────────────
+  .project-card {
+    background: rgba(255, 255, 255, .90);
+    border-color: rgba(15, 118, 110, .15);
+
+    &__name {
+      color: #082121;
+    }
+
+    &__desc {
+      color: #2e5856;
+    }
+
+    &__lang {
+      color: #0f766e;
+      background: rgba(15, 118, 110, .08);
+    }
+
+    &__stars {
+      color: #4a8880;
+    }
+
+    &__foot {
+      border-top-color: rgba(15, 118, 110, .12);
+    }
+
+    &:hover {
+      border-color: rgba(15, 118, 110, .4);
+      box-shadow: 0 0 24px rgba(15, 118, 110, .1);
+    }
+  }
+
+  .see-all {
+    background: rgba(255, 255, 255, .82);
+    border-color: rgba(15, 118, 110, .22);
+
+    &:hover {
+      border-color: #0f766e;
+      background: rgba(15, 118, 110, .05);
+    }
+  }
+
+  // ── Certs ────────────────────────────────────────────────
+  .cert-badge {
+    background: rgba(255, 255, 255, .90);
+    border-color: rgba(180, 145, 20, .22);
+
+    &__title {
+      color: #082121;
+    }
+
+    &__issuer {
+      color: #0f766e;
+    }
+
+    &:hover {
+      border-color: rgba(180, 145, 20, .5);
+      box-shadow: 0 0 20px rgba(180, 145, 20, .09);
+    }
+  }
+
+  // ── Interests ────────────────────────────────────────────
+  .interests-zone {
+    color: rgba(15, 118, 110, .45);
+  }
+
+  .interests-divider {
+    background: linear-gradient(to bottom,
+        transparent,
+        rgba(15, 118, 110, .14) 20%,
+        rgba(15, 118, 110, .14) 80%,
+        transparent);
+  }
+
+  .interest-bubble {
+    &__circle {
+      background: rgba(255, 255, 255, .90);
+      border-color: rgba(15, 118, 110, .18);
+    }
+
+    &__label {
+      color: #0f766e;
+    }
+
+    &:hover &__circle {
+      border-color: rgba(15, 118, 110, .5);
+      box-shadow: 0 0 20px rgba(15, 118, 110, .14), inset 0 0 16px rgba(15, 118, 110, .04);
+    }
+  }
+
+  // ── Contact ──────────────────────────────────────────────
+  .contact-depth {
+    color: rgba(15, 118, 110, .45);
+  }
+
+  .contact-sub {
+    color: #2e5856;
+  }
+
+  .contact-social {
+    border-color: rgba(15, 118, 110, .2);
+    color: #2e5856;
+
+    &:hover {
+      border-color: #0f766e;
+      color: #0f766e;
+    }
+  }
+
+  .contact-footer-line {
+    color: rgba(15, 118, 110, .38);
+  }
+
+  .contact-footer-sep {
+    opacity: .35;
+  }
+
+  .contact-vue {
+    color: rgba(15, 118, 110, .65);
+  }
+
+  .contact-surface-btn {
+    color: rgba(15, 118, 110, .38);
+
+    &:hover {
+      color: rgba(15, 118, 110, .72);
+    }
   }
 }
 </style>
