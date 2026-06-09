@@ -18,6 +18,23 @@ const certs = useCertificationsStore()
 const previewProjects = computed(() => github.repos.slice(0, 3))
 const previewCerts = computed(() => certs.certifications.slice(0, 3))
 
+const toastVisible = ref(false)
+const toastMessage = ref('')
+let toastTimer: ReturnType<typeof setTimeout>
+
+function copyEmail(e: MouseEvent) {
+  e.preventDefault()
+  navigator.clipboard.writeText('carvalhobrunomr@gmail.com').then(() => {
+    clearTimeout(toastTimer)
+    toastMessage.value = '✓ Email copied to clipboard'
+    toastVisible.value = true
+    toastTimer = setTimeout(() => { toastVisible.value = false }, 2600)
+  }).catch(() => {
+    window.location.href = 'mailto:carvalhobrunomr@gmail.com'
+  })
+}
+
+
 // ── Typewriter ────────────────────────────────────────────────
 const roles = [
   'Frontend Developer',
@@ -581,8 +598,13 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
           </p>
 
           <!-- Email CTA -->
-          <a href="mailto:carvalhobrunomr@gmail.com" class="contact-email">
-            <i class="ti ti-mail" aria-hidden="true" />
+          <a href="mailto:carvalhobrunomr@gmail.com" class="contact-email" aria-label="Copy email address"
+            @click="copyEmail">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect width="20" height="16" x="2" y="4" rx="2" />
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+            </svg>
             carvalhobrunomr@gmail.com
           </a>
 
@@ -619,6 +641,11 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
         </div>
       </div>
 
+      <Transition name="toast">
+        <div v-if="toastVisible" class="home-toast" role="status" aria-live="polite">
+          {{ toastMessage }}
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
@@ -1823,6 +1850,30 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   }
 }
 
+.home-toast {
+  position: fixed;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  background: rgba(8, 33, 33, .96);
+  border: 1px solid rgba(45, 212, 191, .35);
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+  font-size: .8125rem;
+  padding: .625rem 1.375rem;
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, .35), 0 0 0 1px rgba(45, 212, 191, .1);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.toast-enter-active { transition: all .25s cubic-bezier(.34, 1.4, .64, 1); }
+.toast-leave-active { transition: all .2s ease-in; }
+.toast-enter-from   { opacity: 0; transform: translateX(-50%) translateY(12px) scale(.92); }
+.toast-leave-to     { opacity: 0; transform: translateX(-50%) translateY(-8px) scale(.96); }
+
 // ════════════════════════════════════════════════════════════
 // LIGHT THEME — override de todos os valores hardcoded
 // ════════════════════════════════════════════════════════════
@@ -1834,6 +1885,13 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
       radial-gradient(ellipse at 18% 48%, rgba(15, 118, 110, .07) 0%, transparent 52%),
       radial-gradient(ellipse at 78% 22%, rgba(15, 118, 110, .08) 0%, transparent 52%),
       radial-gradient(ellipse at 52% 78%, rgba(15, 118, 110, .05) 0%, transparent 52%);
+  }
+
+  .home-toast {
+    background: rgba(240, 251, 249, .97);
+    border-color: rgba(15, 118, 110, .3);
+    color: #0f766e;
+    box-shadow: 0 4px 24px rgba(15, 118, 110, .15), 0 0 0 1px rgba(15, 118, 110, .08);
   }
 
   .home__vignette {
