@@ -4,7 +4,7 @@ import gsap from 'gsap'
 
 const emit = defineEmits<{ done: [] }>()
 
-const STORAGE_KEY = 'bc_intro_v1'
+const STORAGE_KEY = 'bc_intro'
 const sceneRef    = ref<HTMLElement>()
 const linesDom    = ref<HTMLElement[]>([])
 
