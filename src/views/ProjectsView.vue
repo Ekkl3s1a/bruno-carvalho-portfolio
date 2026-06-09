@@ -1,181 +1,122 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { ExternalLink, Star, GitFork, ArrowUpDown } from 'lucide-vue-next'
+import { computed } from 'vue'
 import { useGithubStore } from '@/stores/github'
-import ScrollReveal from '@/components/shared/ScrollReveal.vue'
-import SectionTitle from '@/components/shared/SectionTitle.vue'
-import SkillTag from '@/components/shared/SkillTag.vue'
+import ScrollReveal       from '@/components/shared/ScrollReveal.vue'
 
 const github = useGithubStore()
 
-onMounted(() => github.fetchRepos())
+// Garante fetch ao entrar na página
+github.fetchRepos()
+
+const activeFilter = computed(() => github.activeFilter)
+const activeSortBy = computed(() => github.sortBy)
+
+const languages = computed(() => ['All', ...github.languages])
 </script>
 
 <template>
-  <div class="projects-page">
-    <div class="projects-page__container">
+  <div class="projects-view">
+    <div class="projects-view__container">
 
-      <!-- Header -->
       <ScrollReveal>
-        <SectionTitle
-          title="All Projects"
-          subtitle="Every public repository — filtered and sorted as you like."
-        />
+        <header class="projects-view__header">
+          <h1 class="projects-view__title">Projects</h1>
+          <p class="projects-view__sub">
+            Public repositories on GitHub — {{ github.repos.length }} total.
+          </p>
+        </header>
       </ScrollReveal>
 
-      <!-- Stats bar -->
-      <ScrollReveal :delay="60">
-        <div class="projects-page__stats" aria-label="Repository statistics">
-          <div class="projects-page__stat">
-            <span class="projects-page__stat-value">
-              {{ github.loading ? '—' : github.stats.totalRepos }}
-            </span>
-            <span class="projects-page__stat-label">Repos</span>
-          </div>
-          <div class="projects-page__stat-divider" aria-hidden="true" />
-          <div class="projects-page__stat">
-            <span class="projects-page__stat-value">
-              {{ github.loading ? '—' : github.stats.languages }}
-            </span>
-            <span class="projects-page__stat-label">Languages</span>
-          </div>
-          <div class="projects-page__stat-divider" aria-hidden="true" />
-          <div class="projects-page__stat">
-            <span class="projects-page__stat-value">
-              {{ github.loading ? '—' : github.stats.totalStars }}
-            </span>
-            <span class="projects-page__stat-label">Stars</span>
-          </div>
-        </div>
-      </ScrollReveal>
-
-      <!-- Toolbar: filtros + sort -->
-      <ScrollReveal :delay="80">
-        <div class="projects-page__toolbar">
-
-          <!-- Language filters -->
-          <div class="projects-page__filters" role="group" aria-label="Filter by language">
+      <!-- Filters -->
+      <div class="projects-view__filters">
+        <div class="filter-group">
+          <span class="filter-group__label">Language</span>
+          <div class="filter-group__pills">
             <button
-              class="projects-page__filter"
-              :class="{ 'projects-page__filter--active': github.activeFilter === 'all' }"
-              @click="github.setFilter('all')"
-            >
-              All
-            </button>
-            <button
-              v-for="lang in github.languages"
+              v-for="lang in languages"
               :key="lang"
-              class="projects-page__filter"
-              :class="{ 'projects-page__filter--active': github.activeFilter === lang }"
-              @click="github.setFilter(lang)"
+              class="filter-pill"
+              :class="{ 'filter-pill--active': activeFilter === (lang === 'All' ? '' : lang) }"
+              @click="github.setFilter(lang === 'All' ? '' : lang)"
             >
               {{ lang }}
             </button>
           </div>
-
-          <!-- Sort toggle -->
-          <button
-            class="projects-page__sort"
-            :title="`Sorted by ${github.sortBy === 'updated' ? 'most recent' : 'most stars'}`"
-            @click="github.setSortBy(github.sortBy === 'updated' ? 'stars' : 'updated')"
-          >
-            <ArrowUpDown :size="14" aria-hidden="true" />
-            {{ github.sortBy === 'updated' ? 'Recent' : 'Stars' }}
-          </button>
         </div>
-      </ScrollReveal>
 
-      <!-- Skeleton -->
-      <div v-if="github.loading" class="projects-page__grid">
+        <div class="filter-group">
+          <span class="filter-group__label">Sort by</span>
+          <div class="filter-group__pills">
+            <button
+              class="filter-pill"
+              :class="{ 'filter-pill--active': activeSortBy === 'updated' }"
+              @click="github.setSortBy('updated')"
+            >Recent</button>
+            <button
+              class="filter-pill"
+              :class="{ 'filter-pill--active': activeSortBy === 'stars' }"
+              @click="github.setSortBy('stars')"
+            >Stars</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skeleton loaders -->
+      <div v-if="github.loading" class="projects-view__grid">
         <div v-for="n in 9" :key="n" class="project-skeleton">
-          <div class="project-skeleton__line project-skeleton__line--title" />
-          <div class="project-skeleton__line" />
-          <div class="project-skeleton__line project-skeleton__line--short" />
-          <div class="project-skeleton__footer">
+          <div class="project-skeleton__name" />
+          <div class="project-skeleton__desc" />
+          <div class="project-skeleton__desc project-skeleton__desc--short" />
+          <div class="project-skeleton__foot">
             <div class="project-skeleton__tag" />
             <div class="project-skeleton__stat" />
           </div>
         </div>
       </div>
 
-      <!-- Erro -->
-      <p v-else-if="github.error" class="projects-page__error">
-        {{ github.error }}
-      </p>
-
-      <!-- Empty state -->
-      <div
-        v-else-if="!github.filteredRepos.length"
-        class="projects-page__empty"
-      >
-        <span class="projects-page__empty-icon" aria-hidden="true">🔍</span>
-        <p>No repositories found for <strong>{{ github.activeFilter }}</strong>.</p>
-        <button
-          class="projects-page__empty-reset"
-          @click="github.setFilter('all')"
-        >
-          Clear filter
-        </button>
-      </div>
-
-      <!-- Grid -->
-      <div v-else class="projects-page__grid">
+      <!-- Repos grid -->
+      <div v-else class="projects-view__grid">
         <ScrollReveal
           v-for="(repo, i) in github.filteredRepos"
           :key="repo.id"
-          :delay="(i % 9) * 40"
+          :delay="(i % 3) * 60"
         >
           <a
             :href="repo.html_url"
-            target="_blank"
-            rel="noopener noreferrer"
+            target="_blank" rel="noopener noreferrer"
             class="project-card"
           >
             <div class="project-card__top">
-              <h3 class="project-card__name">{{ repo.name }}</h3>
-              <ExternalLink
-                :size="13"
-                class="project-card__external"
-                aria-hidden="true"
-              />
+              <span class="project-card__name">{{ repo.name }}</span>
+              <svg class="project-card__ext" xmlns="http://www.w3.org/2000/svg"
+                width="13" height="13" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              </svg>
             </div>
-
             <p class="project-card__desc">
-              {{ repo.description || 'No description provided.' }}
+              {{ repo.description || 'No description.' }}
             </p>
-
-            <!-- Live demo link se disponível -->
-            <a
-              v-if="repo.homepage"
-              :href="repo.homepage"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="project-card__demo"
-              :aria-label="`Live demo for ${repo.name}`"
-              @click.stop
-            >
-              ↗ Live demo
-            </a>
-
-            <div class="project-card__footer">
-              <SkillTag
-                v-if="repo.language"
-                :label="repo.language"
-                variant="primary"
-              />
-              <div class="project-card__meta">
-                <span v-if="repo.stargazers_count" class="project-card__stat">
-                  <Star :size="11" aria-hidden="true" />
-                  {{ repo.stargazers_count }}
-                </span>
-                <span v-if="repo.forks_count" class="project-card__stat">
-                  <GitFork :size="11" aria-hidden="true" />
-                  {{ repo.forks_count }}
-                </span>
-              </div>
+            <div class="project-card__foot">
+              <span v-if="repo.language" class="project-card__lang">
+                {{ repo.language }}
+              </span>
+              <span v-if="repo.stargazers_count" class="project-card__stars">
+                ★ {{ repo.stargazers_count }}
+              </span>
+              <span class="project-card__updated">
+                {{ new Date(repo.updated_at).toLocaleDateString('en', { month: 'short', year: 'numeric' }) }}
+              </span>
             </div>
           </a>
         </ScrollReveal>
+
+        <!-- Empty state -->
+        <div v-if="!github.filteredRepos.length" class="projects-view__empty">
+          No repos found for <strong>{{ activeFilter }}</strong>.
+          <button @click="github.setFilter('')">Clear filter</button>
+        </div>
       </div>
 
     </div>
@@ -185,293 +126,239 @@ onMounted(() => github.fetchRepos())
 <style lang="scss" scoped>
 @use '@/styles/mixins' as *;
 
-.projects-page {
-  padding-top: calc(var(--header-height) + 3.5rem);
-  padding-bottom: 5rem;
+.projects-view {
+  padding-top: 5rem;
+  min-height: 100vh;
 
   &__container { @include container; }
 
-  // ── Stats bar ──────────────────────────────────────────────
-  &__stats {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    background: var(--color-card);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: 1rem 1.5rem;
-    margin-bottom: 1.75rem;
-    width: fit-content;
+  &__header { margin-bottom: 2.5rem; }
+
+  &__title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -.025em;
+    color: var(--color-text);
   }
 
-  &__stat {
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-    text-align: center;
-
-    &-value {
-      font-family: var(--font-mono);
-      font-size: 1.375rem;
-      font-weight: 700;
-      color: var(--color-primary);
-      line-height: 1;
-    }
-
-    &-label {
-      font-size: 0.75rem;
-      color: var(--color-text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    &-divider {
-      width: 1px;
-      height: 32px;
-      background: var(--color-border);
-    }
-  }
-
-  // ── Toolbar ───────────────────────────────────────────────
-  &__toolbar {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
+  &__sub {
+    margin-top: .5rem;
+    color: var(--color-text-muted);
+    font-size: .9375rem;
   }
 
   &__filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
   }
 
-  &__filter {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    padding: 0.375rem 0.875rem;
-    border-radius: var(--radius-pill);
-    border: 1px solid var(--color-border);
-    background: transparent;
-    color: var(--color-text-muted);
-    cursor: pointer;
-    transition: all var(--transition-base);
-    white-space: nowrap;
-
-    &:hover {
-      border-color: var(--color-primary);
-      color: var(--color-primary);
-    }
-
-    &--active {
-      background: rgba(45, 212, 191, 0.10);
-      border-color: var(--color-primary);
-      color: var(--color-primary);
-      font-weight: 500;
-    }
-  }
-
-  &__sort {
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    font-family: var(--font-mono);
-    color: var(--color-text-muted);
-    border: 1px solid var(--color-border);
-    background: transparent;
-    padding: 0.375rem 0.875rem;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: all var(--transition-base);
-    white-space: nowrap;
-
-    &:hover {
-      border-color: var(--color-primary);
-      color: var(--color-primary);
-    }
-  }
-
-  // ── Grid ──────────────────────────────────────────────────
   &__grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-
-    @include respond-to('md') { grid-template-columns: repeat(2, 1fr); }
-    @include respond-to('lg') { grid-template-columns: repeat(3, 1fr); }
-  }
-
-  // ── States ────────────────────────────────────────────────
-  &__error {
-    text-align: center;
-    padding: 3rem;
-    color: var(--color-error);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+    padding-bottom: 4rem;
   }
 
   &__empty {
+    grid-column: 1 / -1;
     text-align: center;
-    padding: 4rem 2rem;
+    padding: 3rem;
     color: var(--color-text-muted);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
 
-    &-icon { font-size: 2.5rem; }
+    strong { color: var(--color-primary); }
 
-    strong { color: var(--color-text); }
-
-    &-reset {
-      font-size: 0.875rem;
+    button {
+      display: inline-block;
+      margin-top: .75rem;
+      font-size: .875rem;
       color: var(--color-primary);
-      border: 1px solid var(--color-primary);
-      background: transparent;
-      padding: 0.5rem 1.25rem;
-      border-radius: var(--radius-md);
+      background: none;
+      border: 1px solid rgba(45, 212, 191, .3);
+      border-radius: var(--radius-pill);
+      padding: .3rem .875rem;
       cursor: pointer;
-      transition: background var(--transition-base);
-      margin-top: 0.5rem;
-
-      &:hover { background: rgba(45, 212, 191, 0.08); }
+      transition: all var(--transition-base);
+      &:hover { background: rgba(45, 212, 191, .08); }
     }
   }
 }
 
-// ── Project card ──────────────────────────────────────────────
+// ── Filter pills ──────────────────────────────────────────────
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: .625rem;
 
-.project-card {
-  @include card;
+  &__label {
+    font-size: .75rem;
+    font-family: var(--font-mono);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    white-space: nowrap;
+  }
+
+  &__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .375rem;
+  }
+}
+
+.filter-pill {
+  font-size: .8125rem;
+  font-family: var(--font-mono);
+  padding: .3rem .875rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  white-space: nowrap;
+
+  &:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+  &--active {
+    background: rgba(45, 212, 191, .1);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    font-weight: 500;
+  }
+}
+
+// ── Skeleton loader ───────────────────────────────────────────
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+%skeleton-line {
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    rgba(45, 212, 191, .06) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.project-skeleton {
+  background: var(--color-glass-bg);
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-xl);
+  padding: 1.375rem;
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
+  gap: .75rem;
+
+  &__name  { @extend %skeleton-line; height: 16px; width: 65%; }
+  &__desc  { @extend %skeleton-line; height: 12px; width: 100%; }
+  &__desc--short { width: 72%; }
+
+  &__foot  {
+    display: flex;
+    justify-content: space-between;
+    margin-top: .25rem;
+  }
+  &__tag   { @extend %skeleton-line; height: 20px; width: 72px; border-radius: 20px; }
+  &__stat  { @extend %skeleton-line; height: 14px; width: 40px; }
+}
+
+// ── Project cards ─────────────────────────────────────────────
+.project-card {
+  background: var(--color-glass-bg);
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(14px);
   padding: 1.375rem;
   text-decoration: none;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  transition:
+    border-color var(--transition-base),
+    transform    var(--transition-base),
+    box-shadow   var(--transition-base);
+
+  &:hover {
+    border-color: rgba(45, 212, 191, .38);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, .18), 0 0 0 1px rgba(45, 212, 191, .12);
+  }
 
   &__top {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 0.5rem;
+    gap: .5rem;
   }
 
   &__name {
     font-family: var(--font-mono);
-    font-size: 0.875rem;
+    font-size: .875rem;
     font-weight: 600;
     color: var(--color-text);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    word-break: break-word;
   }
 
-  &__external {
-    color: var(--color-text-muted);
+  &__ext {
     flex-shrink: 0;
+    color: var(--color-text-muted);
     opacity: 0;
-    transform: translateX(-4px);
-    transition: opacity var(--transition-base), transform var(--transition-base);
+    transition: opacity var(--transition-base);
+    margin-top: 2px;
   }
-
-  &:hover &__external {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  &:hover &__ext { opacity: 1; }
 
   &__desc {
-    font-size: 0.8125rem;
+    font-size: .8125rem;
     color: var(--color-text-muted);
-    line-height: 1.65;
+    line-height: 1.6;
     flex: 1;
-    margin: 0;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
-  &__demo {
-    font-size: 0.75rem;
-    font-family: var(--font-mono);
-    color: var(--color-secondary);
-    text-decoration: none;
-    transition: color var(--transition-base);
-
-    &:hover { color: var(--color-primary); }
-  }
-
-  &__footer {
+  &__foot {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    margin-top: auto;
-    padding-top: 0.5rem;
-    border-top: 1px solid var(--color-border);
+    gap: .625rem;
+    padding-top: .5rem;
+    border-top: 1px solid var(--color-glass-border);
+    flex-wrap: wrap;
   }
 
-  &__meta {
-    display: flex;
-    gap: 0.625rem;
-  }
-
-  &__stat {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
+  &__lang {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: .73rem;
+    color: var(--color-primary);
+    background: rgba(45, 212, 191, .08);
+    border: 1px solid rgba(45, 212, 191, .16);
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+  }
+
+  &__stars {
+    font-family: var(--font-mono);
+    font-size: .73rem;
+    color: #FBBF24;
+  }
+
+  &__updated {
+    font-family: var(--font-mono);
+    font-size: .7rem;
     color: var(--color-text-muted);
+    margin-left: auto;
+    opacity: .7;
   }
-}
-
-// ── Skeleton ──────────────────────────────────────────────────
-
-.project-skeleton {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 1.375rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-
-  &__line {
-    height: 12px;
-    border-radius: var(--radius-sm);
-    background: var(--color-surface);
-    position: relative;
-    overflow: hidden;
-
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(45, 212, 191, 0.07),
-        transparent
-      );
-      animation: shimmer 1.6s ease-in-out infinite;
-    }
-
-    &--title { height: 16px; width: 65%; }
-    &--short { width: 40%; }
-  }
-
-  &__footer {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 0.5rem;
-    border-top: 1px solid var(--color-border);
-  }
-
-  &__tag  { height: 22px; width: 56px; border-radius: var(--radius-pill); background: var(--color-surface); }
-  &__stat { height: 14px; width: 36px; border-radius: var(--radius-sm);   background: var(--color-surface); }
 }
 </style>
