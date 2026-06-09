@@ -22,6 +22,7 @@ export interface GitHubRepo {
 export interface Certification {
   id: number
   title: string
+  description?: string
   issuer: string
   date: string           // 'YYYY-MM'
   credentialUrl?: string

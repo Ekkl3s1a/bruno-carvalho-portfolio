@@ -1,481 +1,334 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { Award, ExternalLink, X, Calendar, Building2 } from 'lucide-vue-next'
-import { useCertificationsStore } from '@/stores/certifications'
+import { ref } from 'vue'
+import { useCertificationsStore }  from '@/stores/certifications'
 import ScrollReveal from '@/components/shared/ScrollReveal.vue'
-import SectionTitle from '@/components/shared/SectionTitle.vue'
-import SkillTag from '@/components/shared/SkillTag.vue'
-import type { Certification } from '@/types'
 
-const certStore = useCertificationsStore()
+const certs  = useCertificationsStore()
+const active = ref<number | null>(null)
 
-// ── Modal ─────────────────────────────────────────────────────
-const selected = ref<Certification | null>(null)
-const modalEl  = ref<HTMLElement>()
+function open(id: number)  { active.value = id }
+function close()           { active.value = null }
 
-function open(cert: Certification) {
-  selected.value = cert
-  document.body.style.overflow = 'hidden'
-  // Foca o modal depois do DOM actualizar
-  setTimeout(() => modalEl.value?.focus(), 50)
-}
-
-function close() {
-  selected.value = null
-  document.body.style.overflow = ''
-}
-
-function handleKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape') close()
-}
-
-onMounted(() => document.addEventListener('keydown', handleKeydown))
-onBeforeUnmount(() => {
-  document.removeEventListener('keydown', handleKeydown)
-  document.body.style.overflow = ''
-})
-
-// ── Helpers ───────────────────────────────────────────────────
-function formatDate(date: string) {
-  const [year, month] = date.split('-')
-  const months = ['Jan','Feb','Mar','Apr','May','Jun',
-                  'Jul','Aug','Sep','Oct','Nov','Dec']
-  return `${months[+month - 1]} ${year}`
-}
+// Close on Escape
+function onKey(e: KeyboardEvent) { if (e.key === 'Escape') close() }
 </script>
 
 <template>
-  <div class="certs-page">
-    <div class="certs-page__container">
+  <div class="certs-view" @keydown="onKey">
+    <div class="certs-view__container">
 
       <ScrollReveal>
-        <SectionTitle
-          title="Certifications"
-          subtitle="A chronological record of my professional development."
-        />
+        <header class="certs-view__header">
+          <h1 class="certs-view__title">Certifications</h1>
+          <p  class="certs-view__sub">
+            {{ certs.certifications.length }} certifications earned.
+          </p>
+        </header>
       </ScrollReveal>
 
-      <!-- Timeline completa -->
-      <div class="timeline">
-        <ScrollReveal
-          v-for="(cert, i) in certStore.certifications"
+      <!-- Timeline -->
+      <ol class="cert-timeline" aria-label="Certifications timeline">
+        <li
+          v-for="(cert, i) in certs.certifications"
           :key="cert.id"
-          :delay="i * 80"
+          class="cert-timeline__item"
         >
-          <div class="timeline__item">
-
-            <!-- Dot + linha vertical -->
-            <div class="timeline__aside" aria-hidden="true">
-              <div class="timeline__dot">
-                <Award :size="13" />
-              </div>
-              <div
-                v-if="i < certStore.certifications.length - 1"
-                class="timeline__line"
-              />
+          <ScrollReveal :delay="i * 80">
+            <div class="cert-timeline__connector" aria-hidden="true">
+              <div class="cert-timeline__dot" />
+              <div class="cert-timeline__line" />
             </div>
 
-            <!-- Card clicável -->
             <button
-              class="timeline__card"
+              class="cert-card"
               :aria-label="`View details for ${cert.title}`"
-              @click="open(cert)"
+              @click="open(cert.id)"
             >
-              <div class="timeline__card-header">
-                <div class="timeline__card-info">
-                  <h3 class="timeline__card-title">{{ cert.title }}</h3>
-                  <span class="timeline__card-issuer">
-                    <Building2 :size="12" aria-hidden="true" />
-                    {{ cert.issuer }}
-                  </span>
-                </div>
-                <time
-                  class="timeline__card-date"
-                  :datetime="cert.date"
-                >
-                  <Calendar :size="12" aria-hidden="true" />
-                  {{ formatDate(cert.date) }}
-                </time>
+              <div class="cert-card__meta">
+                <span class="cert-card__date">{{ cert.date }}</span>
+                <span class="cert-card__issuer">{{ cert.issuer }}</span>
               </div>
-
-              <div class="timeline__card-skills">
-                <SkillTag
-                  v-for="skill in cert.skills"
-                  :key="skill"
-                  :label="skill"
-                />
+              <h2 class="cert-card__title">{{ cert.title }}</h2>
+              <div class="cert-card__tags">
+                <span
+                  v-for="tag in cert.skills"
+                  :key="tag"
+                  class="cert-card__tag"
+                >{{ tag }}</span>
               </div>
-
-              <span class="timeline__card-hint" aria-hidden="true">
-                Click for details
-              </span>
+              <span class="cert-card__cta">View details →</span>
             </button>
-
-          </div>
-        </ScrollReveal>
-      </div>
+          </ScrollReveal>
+        </li>
+      </ol>
     </div>
 
-    <!-- ── Modal ── Teleport escapa o stacking context ─────── -->
+    <!-- Modal -->
     <Teleport to="body">
       <Transition name="modal">
         <div
-          v-if="selected"
-          class="modal-overlay"
+          v-if="active"
+          class="cert-modal-backdrop"
           role="dialog"
           aria-modal="true"
-          :aria-labelledby="`modal-title-${selected.id}`"
+          :aria-label="certs.getById(active)?.title"
           @click.self="close"
         >
-          <div
-            ref="modalEl"
-            class="modal"
-            tabindex="-1"
-          >
-            <!-- Close -->
-            <button
-              class="modal__close"
-              aria-label="Close modal"
-              @click="close"
-            >
-              <X :size="18" aria-hidden="true" />
+          <div class="cert-modal" v-if="certs.getById(active) as any">
+            <button class="cert-modal__close" aria-label="Close" @click="close">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6 6 18M6 6l12 12"/>
+              </svg>
             </button>
 
-            <!-- Icon -->
-            <div class="modal__icon" aria-hidden="true">
-              <Award :size="26" />
+            <div class="cert-modal__award" aria-hidden="true">🏆</div>
+            <h2 class="cert-modal__title">{{ certs.getById(active)?.title }}</h2>
+            <p  class="cert-modal__issuer">{{ certs.getById(active)?.issuer }}</p>
+            <p  class="cert-modal__date">{{ certs.getById(active)?.date }}</p>
+
+            <p v-if="certs.getById(active)?.description" class="cert-modal__desc">
+              {{ certs.getById(active)?.description }}
+            </p>
+
+            <div class="cert-modal__tags">
+              <span
+                v-for="tag in certs.getById(active)?.skills"
+                :key="tag"
+                class="cert-card__tag"
+              >{{ tag }}</span>
             </div>
 
-            <!-- Content -->
-            <h2 :id="`modal-title-${selected.id}`" class="modal__title">
-              {{ selected.title }}
-            </h2>
-
-            <div class="modal__meta">
-              <span class="modal__issuer">
-                <Building2 :size="14" aria-hidden="true" />
-                {{ selected.issuer }}
-              </span>
-              <span class="modal__date">
-                <Calendar :size="14" aria-hidden="true" />
-                {{ formatDate(selected.date) }}
-              </span>
-            </div>
-
-            <!-- Skills -->
-            <div class="modal__skills">
-              <p class="modal__skills-label">Skills covered</p>
-              <div class="modal__skills-list">
-                <SkillTag
-                  v-for="skill in selected.skills"
-                  :key="skill"
-                  :label="skill"
-                  variant="primary"
-                />
-              </div>
-            </div>
-
-            <!-- Credential link -->
             <a
-              v-if="selected.credentialUrl && selected.credentialUrl !== '#'"
-              :href="selected.credentialUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="modal__cta"
+              v-if="certs.getById(active)?.credentialUrl"
+              :href="certs.getById(active)?.credentialUrl"
+              target="_blank" rel="noopener noreferrer"
+              class="cert-modal__link"
             >
-              <ExternalLink :size="16" aria-hidden="true" />
-              View credential
+              View credential ↗
             </a>
           </div>
         </div>
       </Transition>
     </Teleport>
-
   </div>
 </template>
 
 <style lang="scss" scoped>
 @use '@/styles/mixins' as *;
 
-// ── Page ──────────────────────────────────────────────────────
+.certs-view {
+  padding-top: 5rem;
+  min-height: 100vh;
 
-.certs-page {
-  padding-top: calc(var(--header-height) + 3.5rem);
-  padding-bottom: 5rem;
+  &__container { @include container; max-width: 760px; }
 
-  &__container {
-    @include container;
-    max-width: 780px;
+  &__header  { margin-bottom: 3rem; }
+  &__title   {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -.025em;
+    color: var(--color-text);
   }
+  &__sub     { margin-top: .5rem; color: var(--color-text-muted); }
 }
 
 // ── Timeline ──────────────────────────────────────────────────
-
-.timeline {
-  display: flex;
-  flex-direction: column;
+.cert-timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  padding-bottom: 4rem;
 
   &__item {
     display: grid;
-    grid-template-columns: 32px 1fr;
+    //grid-template-columns: 28px 1fr;
     gap: 0 1.25rem;
+    margin-bottom: 0;
   }
 
-  // Coluna esquerda
-  &__aside {
+  &__connector {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 0.9rem;
+    padding-top: 1.25rem;
   }
 
   &__dot {
-    width: 32px;
-    height: 32px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    background: rgba(45, 212, 191, 0.10);
-    border: 2px solid var(--color-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-primary);
+    background: var(--color-primary);
+    border: 2px solid var(--color-bg);
+    box-shadow: 0 0 0 2px var(--color-primary);
     flex-shrink: 0;
     z-index: 1;
-    transition: background var(--transition-base);
-
-    .timeline__item:has(.timeline__card:hover) & {
-      background: rgba(45, 212, 191, 0.22);
-    }
   }
 
   &__line {
     flex: 1;
-    width: 2px;
-    background: var(--color-border);
-    margin-block: 6px;
-    min-height: 1.5rem;
-  }
-
-  // Card (button reset)
-  &__card {
-    background: var(--color-card);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: 1.125rem 1.375rem;
-    margin-bottom: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    text-align: left;
-    cursor: pointer;
-    width: 100%;
-    font-family: var(--font-sans);
-    position: relative;
-    transition:
-      border-color var(--transition-base),
-      transform var(--transition-base),
-      box-shadow var(--transition-base);
-
-    &:hover {
-      border-color: var(--color-primary);
-      transform: translateX(4px);
-      box-shadow: var(--shadow-glow);
-    }
-
-    &-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    &-title {
-      font-size: 0.9375rem;
-      font-weight: 600;
-      color: var(--color-text);
-      margin-bottom: 0.25rem;
-    }
-
-    &-issuer {
-      display: flex;
-      align-items: center;
-      gap: 0.375rem;
-      font-size: 0.8125rem;
-      color: var(--color-primary);
-    }
-
-    &-date {
-      display: flex;
-      align-items: center;
-      gap: 0.375rem;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--color-text-muted);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    &-skills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.375rem;
-    }
-
-    // Hint subtil — só aparece no hover
-    &-hint {
-      font-size: 0.75rem;
-      color: var(--color-text-muted);
-      font-family: var(--font-mono);
-      opacity: 0;
-      transition: opacity var(--transition-base);
-    }
-
-    &:hover &-hint { opacity: 1; }
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      rgba(45, 212, 191, .4),
+      rgba(45, 212, 191, .08)
+    );
+    min-height: 2rem;
+    margin-top: 4px;
   }
 }
 
-// ── Modal ─────────────────────────────────────────────────────
+// ── Cert card ─────────────────────────────────────────────────
+.cert-card {
+  display: flex;
+  flex-direction: column;
+  gap: .625rem;
+  width: 100%;
+  text-align: left;
+  background: var(--color-glass-bg);
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(14px);
+  padding: 1.375rem 1.5rem;
+  cursor: pointer;
+  margin-bottom: 1.25rem;
+  transition:
+    border-color var(--transition-base),
+    transform    var(--transition-base),
+    box-shadow   var(--transition-base);
 
-.modal-overlay {
+  &:hover {
+    border-color: rgba(45, 212, 191, .38);
+    transform: translateX(4px);
+    box-shadow: -4px 0 0 0 var(--color-primary), 0 4px 24px rgba(0, 0, 0, .12);
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+  }
+
+  &__date {
+    font-family: var(--font-mono);
+    font-size: .72rem;
+    color: var(--color-primary);
+    background: rgba(45, 212, 191, .08);
+    border: 1px solid rgba(45, 212, 191, .16);
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+  }
+
+  &__issuer {
+    font-size: .8125rem;
+    color: var(--color-text-muted);
+  }
+
+  &__title {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .375rem;
+  }
+
+  &__tag {
+    font-family: var(--font-mono);
+    font-size: .72rem;
+    padding: .2rem .6rem;
+    background: rgba(45, 212, 191, .06);
+    border: 1px solid rgba(45, 212, 191, .14);
+    border-radius: var(--radius-pill);
+    color: var(--color-primary);
+    white-space: nowrap;
+  }
+
+  &__cta {
+    font-size: .8125rem;
+    color: var(--color-primary);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+    font-family: var(--font-mono);
+  }
+  &:hover &__cta { opacity: 1; }
+}
+
+// ── Modal ─────────────────────────────────────────────────────
+.cert-modal-backdrop {
   position: fixed;
   inset: 0;
   z-index: 500;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(4, 15, 15, .82);
   backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
 }
 
-.modal {
-  background: var(--color-card);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  padding: 2rem;
-  max-width: 480px;
-  width: 100%;
+.cert-modal {
   position: relative;
-  outline: none; // tabindex="-1", foco gerido pelo JS
+  background: var(--color-surface);
+  border: 1px solid rgba(45, 212, 191, .2);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  max-width: 500px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: .875rem;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, .5);
 
   &__close {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--color-border);
+    top: 1rem; right: 1rem;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
     background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
     color: var(--color-text-muted);
     cursor: pointer;
     transition: all var(--transition-base);
-
-    &:hover {
-      border-color: var(--color-primary);
-      color: var(--color-primary);
-    }
+    &:hover { border-color: var(--color-primary); color: var(--color-primary); }
   }
 
-  &__icon {
-    width: 52px;
-    height: 52px;
-    border-radius: var(--radius-lg);
-    background: rgba(45, 212, 191, 0.12);
-    border: 1px solid rgba(45, 212, 191, 0.25);
-    color: var(--color-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1.125rem;
-  }
+  &__award { font-size: 2.5rem; line-height: 1; }
+  &__title  { font-size: 1.25rem; font-weight: 700; color: var(--color-text); margin: 0; }
+  &__issuer { font-size: .9375rem; color: var(--color-primary); margin: 0; }
+  &__date   { font-family: var(--font-mono); font-size: .8rem; color: var(--color-text-muted); margin: 0; }
+  &__desc   { font-size: .9375rem; color: var(--color-text-muted); line-height: 1.7; margin: 0; }
 
-  &__title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--color-text);
-    margin-bottom: 0.75rem;
-    padding-right: 2rem; // espaço para o botão close
-  }
+  &__tags { display: flex; flex-wrap: wrap; gap: .375rem; }
 
-  &__meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  &__issuer,
-  &__date {
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    font-size: 0.875rem;
-    font-family: var(--font-mono);
-  }
-
-  &__issuer { color: var(--color-primary); }
-  &__date   { color: var(--color-text-muted); }
-
-  &__skills {
-    margin-bottom: 1.75rem;
-
-    &-label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--color-text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 0.625rem;
-    }
-
-    &-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-  }
-
-  &__cta {
+  &__link {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--color-primary);
-    border: 1px solid var(--color-primary);
-    padding: 0.625rem 1.25rem;
+    gap: .4rem;
+    margin-top: .5rem;
+    padding: .625rem 1.25rem;
+    background: var(--color-primary);
+    color: #082121;
     border-radius: var(--radius-md);
+    font-size: .9rem;
+    font-weight: 600;
     text-decoration: none;
-    transition: background var(--transition-base);
-
-    &:hover { background: rgba(45, 212, 191, 0.08); }
+    align-self: flex-start;
+    transition: all var(--transition-base);
+    &:hover { background: var(--color-secondary); transform: translateY(-1px); }
   }
 }
 
-// ── Modal transitions ─────────────────────────────────────────
-
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.22s ease;
-
-  .modal {
-    transition: transform 0.22s ease, opacity 0.22s ease;
-  }
-}
-
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
-
-  .modal {
-    transform: scale(0.95) translateY(12px);
-    opacity: 0;
-  }
-}
+// Modal transitions
+.modal-enter-active { transition: all .25s cubic-bezier(.34, 1.2, .64, 1); }
+.modal-leave-active { transition: all .18s ease-in; }
+.modal-enter-from   { opacity: 0; .cert-modal { transform: scale(.92) translateY(16px); } }
+.modal-leave-to     { opacity: 0; .cert-modal { transform: scale(.96) translateY(-8px); } }
 </style>
