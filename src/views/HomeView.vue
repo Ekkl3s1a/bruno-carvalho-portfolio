@@ -334,7 +334,13 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
             <!-- Download CV -->
             <a :href="cvUrl" download class="vsc-action vsc-action--cv" data-tip="Download CV"
               aria-label="Download CV PDF">
-              <i class="ti ti-file-download" aria-hidden="true" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                aria-hidden="true">
+                <path d="M12 15V3" />
+                <path d="m8 11 4 4 4-4" />
+                <path d="M3 19h18v2H3z" />
+              </svg>
               <span>CV</span>
             </a>
 
@@ -1711,7 +1717,6 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
     font-weight: 500;
     color: rgba(45, 212, 191, .5);
     text-decoration: none;
-    border: 1px solid rgba(45, 212, 191, .15);
     transition: border-color .15s, background .15s, color .15s;
 
     &:hover {
@@ -1923,7 +1928,6 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
 
   .vsc-action--cv {
     color: rgba(15, 118, 110, .65);
-    border-color: rgba(15, 118, 110, .2);
 
     &:hover {
       border-color: rgba(15, 118, 110, .45);
