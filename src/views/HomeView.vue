@@ -126,11 +126,12 @@ const depthLabel = ref('Surface')
 const depths = [
   { at: 0.00, label: 'Surface' },
   { at: 0.22, label: '~10m' },
-  { at: 0.40, label: '~25m' },
-  { at: 0.56, label: '~50m' },
-  { at: 0.70, label: '~80m' },
-  { at: 0.80, label: '~100m' },
-  { at: 0.88, label: '~120m' },
+  { at: 0.37, label: '~25m' },
+  { at: 0.51, label: '~50m' },
+  { at: 0.63, label: '~80m' },
+  { at: 0.73, label: '~100m' },
+  { at: 0.82, label: '~110m' },
+  { at: 0.91, label: '~120m' },
 ]
 
 // ── ScrollTrigger handle ──────────────────────────────────────
@@ -161,54 +162,62 @@ function setupTimeline() {
   const tl = gsap.timeline({ paused: true })
 
   // ── HERO sai (0.18 → 0.30) ───────────────────────────────────
-  tl.to('.vsc-bar--title', { y: -44, opacity: 0, ease: 'none', duration: .11 }, .18)
-  tl.to('.vsc-bar--activity', { x: -52, opacity: 0, ease: 'none', duration: .11 }, .19)
-  tl.to('.vsc-bar--status', { y: 28, opacity: 0, ease: 'none', duration: .11 }, .19)
+  tl.to('.vsc-bar--title', { y: -44, opacity: 0, ease: 'none', duration: .10 }, .17)
+  tl.to('.vsc-bar--activity', { x: -52, opacity: 0, ease: 'none', duration: .10 }, .18)
+  tl.to('.vsc-bar--status', { y: 28, opacity: 0, ease: 'none', duration: .10 }, .18)
   tl.to('.hero-content, .vsc-gutter, .vsc-code', {
     opacity: 0, scale: .93, filter: 'blur(5px)',
-    ease: 'none', duration: .12,
-  }, .20)
-  tl.to('.l-hero', { opacity: 0, ease: 'none', duration: .06 }, .30)
+    ease: 'none', duration: .11,
+  }, .19)
+  tl.to('.l-hero', { opacity: 0, ease: 'none', duration: .06 }, .28)
 
   // ── ABOUT   (0.22 enter → 0.37 exit) ─────────────────────────
   tl.fromTo('.l-about',
     { opacity: 0, scale: .88, filter: 'blur(12px)' },
     { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .12 }, .22)
   tl.to('.l-about',
-    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .09 }, .37)
+    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .09 }, .35)
 
   // ── SKILLS  (0.39 enter → 0.54 exit) ─────────────────────────
   tl.fromTo('.l-skills',
     { opacity: 0, scale: .88, filter: 'blur(12px)' },
-    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .13 }, .39)
+    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .12 }, .36)
   tl.to('.l-skills',
-    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .09 }, .54)
+    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .09 }, .50)
 
   // ── PROJECTS (0.56 enter → 0.70 exit) ────────────────────────
   tl.fromTo('.l-projects',
     { opacity: 0, scale: .88, filter: 'blur(12px)' },
-    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .13 }, .56)
+    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .12 }, .50)
   tl.to('.l-projects',
-    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .09 }, .70)
+    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .09 }, .63)
 
   // ── CERTS   (0.68 enter → 0.80 exit) ─────────────────────────
   tl.fromTo('.l-certs',
     { opacity: 0, scale: .88, filter: 'blur(12px)' },
-    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .10 }, .68)
+    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .11 }, .62)
   tl.to('.l-certs',
-    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .08 }, .80)
+    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .08 }, .74)
 
   // ── INTERESTS (0.78 enter → 0.90 exit) ───────────────────────
   tl.fromTo('.l-interests',
     { opacity: 0, scale: .88, filter: 'blur(12px)' },
-    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .10 }, .78)
+    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .10 }, .72)
   tl.to('.l-interests',
-    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .08 }, .90)
+    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .08 }, .83)
+
+  // ── VSCODE EXT (0.81 enter → 0.92 exit) ──────────────────────
+  tl.fromTo('.l-vscode-ext',
+    { opacity: 0, scale: .88, filter: 'blur(12px)' },
+    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .10 }, .81)
+  tl.to('.l-vscode-ext',
+    { opacity: 0, scale: 1.06, filter: 'blur(8px)', ease: 'none', duration: .08 }, .92)
+
 
   // ── CONTACT  (0.88 enter → stays) ────────────────────────────
   tl.fromTo('.l-contact',
     { opacity: 0, scale: .88, filter: 'blur(12px)' },
-    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .12 }, .88)
+    { opacity: 1, scale: 1, filter: 'blur(0px)', ease: 'none', duration: .12 }, .90)
 
   // ── Vignette escurece até .90 de opacidade ────────────────────
   tl.to('.home__vignette', { opacity: .90, ease: 'none', duration: 1 }, 0)
@@ -222,11 +231,12 @@ function setupTimeline() {
   let lastSection = 'hero'
   const morphBreaks: Array<{ at: number; section: string }> = [
     { at: .22, section: 'about' },
-    { at: .40, section: 'skills' },
-    { at: .57, section: 'projects' },
-    { at: .69, section: 'certifications' },
-    { at: .79, section: 'about' }, // interests reusa esfera
-    { at: .89, section: 'contact' },
+    { at: .37, section: 'skills' },
+    { at: .51, section: 'projects' },
+    { at: .63, section: 'certifications' },
+    { at: .73, section: 'about' },
+    { at: .82, section: 'hero' },
+    { at: .91, section: 'contact' },
   ]
 
   // ── ScrollTrigger ─────────────────────────────────────────────
@@ -257,13 +267,14 @@ function setupTimeline() {
 
       // Pointer-events sync
       const p = self.progress
-      tp('.l-hero', p < .30)
-      tp('.l-about', p >= .22 && p < .46)
-      tp('.l-skills', p >= .39 && p < .62)
-      tp('.l-projects', p >= .56 && p < .78)
-      tp('.l-certs', p >= .68 && p < .86)
-      tp('.l-interests', p >= .78 && p < .92)
-      tp('.l-contact', p >= .88)
+      tp('.l-hero', p < .28)
+      tp('.l-about', p >= .22 && p < .43)
+      tp('.l-skills', p >= .36 && p < .58)
+      tp('.l-projects', p >= .50 && p < .71)
+      tp('.l-certs', p >= .62 && p < .81)
+      tp('.l-interests', p >= .72 && p < .89)
+      tp('.l-vscode-ext', p >= .81 && p < .94)
+      tp('.l-contact', p >= .90)
     },
   })
 }
@@ -416,6 +427,23 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
             <div class="hero-socials">
               <SocialLink platform="github" url="https://github.com/Ekkl3s1a" show-label />
               <SocialLink platform="linkedin" url="https://linkedin.com/in/bruno-mr-carvalho" show-label />
+            </div>
+
+            <!-- Currently Building -->
+            <div v-if="!github.loading && previewProjects[0]" class="hero-building">
+              <span class="hero-building__label">
+                <span class="hero-building__pulse" aria-hidden="true" />
+                Currently building
+              </span>
+              <a :href="previewProjects[0].html_url" target="_blank" rel="noopener noreferrer"
+                class="hero-building__link" :aria-label="`View ${previewProjects[0].name} on GitHub`">
+                <span class="hero-building__name">{{ previewProjects[0].name }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  aria-hidden="true">
+                  <path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                </svg>
+              </a>
             </div>
           </div>
 
@@ -582,6 +610,107 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
 
       </div>
 
+      <!-- ══ VS CODE EXTENSION ══════════════════════════════════════ -->
+      <div class="hlayer l-vscode-ext" aria-label="VS Code Theme">
+        <div class="layer-badge">Open Source</div>
+
+        <div class="ext-spotlight">
+
+          <!-- Left: info -->
+          <div class="ext-info">
+            <div class="ext-icon" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="48" height="48">
+                <path fill="#2DD4BF"
+                  d="M74.46 3.32l-39.2 35.9L15.1 24.2 3.3 31.6l21.1 18.4L3.3 68.4l11.8 7.4 20.16-15.02 39.2 35.9L96.7 88.7V11.3z" />
+              </svg>
+            </div>
+            <div class="ext-meta">
+              <span class="ext-meta__badge">VS Code Marketplace</span>
+              <h2 class="ext-title">Teal Turquoise<br>Theme</h2>
+              <p class="ext-desc">
+                A deep teal color theme inspired by the ocean.
+                Clean, minimal, easy on the eyes — built with the same palette you're looking at right now.
+              </p>
+            </div>
+
+            <!-- Color swatches -->
+            <div class="ext-swatches" aria-label="Theme color palette" aria-hidden="true">
+              <span class="ext-swatch" style="background:#082121" title="Background"></span>
+              <span class="ext-swatch" style="background:#0d2e2c" title="Surface"></span>
+              <span class="ext-swatch" style="background:#2DD4BF" title="Primary"></span>
+              <span class="ext-swatch" style="background:#7AE7DA" title="Secondary"></span>
+              <span class="ext-swatch" style="background:#A78BFA" title="Accent"></span>
+              <span class="ext-swatch" style="background:#FBBF24" title="Warning"></span>
+              <span class="ext-swatch" style="background:#34D399" title="Success"></span>
+              <span class="ext-swatch" style="background:#FB7185" title="Error"></span>
+            </div>
+
+            <a
+            href="https://marketplace.visualstudio.com/items?itemName=ekkl3s1a.ekkl3s1a-themes"
+            target="_blank" rel="noopener noreferrer"
+            class="ext-cta"
+            >
+            Install extension ↗
+            </a>
+          </div>
+
+          <!-- Right: mini VS Code preview -->
+          <div class="ext-preview" aria-hidden="true">
+            <div class="ext-preview__bar">
+              <span class="ext-preview__dot" style="background:#FF5F57"></span>
+              <span class="ext-preview__dot" style="background:#FEBC2E"></span>
+              <span class="ext-preview__dot" style="background:#28C840"></span>
+              <span class="ext-preview__title">theme.json</span>
+            </div>
+            <div class="ext-preview__code">
+              <div class="ext-preview__line">
+                <span style="color:rgba(45,212,191,.4)">1</span>
+                <span class="k">{</span>
+              </div>
+              <div class="ext-preview__line">
+                <span style="color:rgba(45,212,191,.4)">2</span>
+                &nbsp;&nbsp;<span class="s">"name"</span><span class="o">:</span>
+                <span class="s">"Teal Turquoise"</span><span class="o">,</span>
+              </div>
+              <div class="ext-preview__line">
+                <span style="color:rgba(45,212,191,.4)">3</span>
+                &nbsp;&nbsp;<span class="s">"type"</span><span class="o">:</span>
+                <span class="s">"dark"</span><span class="o">,</span>
+              </div>
+              <div class="ext-preview__line">
+                <span style="color:rgba(45,212,191,.4)">4</span>
+                &nbsp;&nbsp;<span class="s">"colors"</span><span class="o">:</span>
+                <span class="k">{</span>
+              </div>
+              <div class="ext-preview__line">
+                <span style="color:rgba(45,212,191,.4)">5</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"editor.background"</span><span class="o">:</span>
+                <span style="color:#34D399">"#082121"</span><span class="o">,</span>
+              </div>
+              <div class="ext-preview__line">
+                <span style="color:rgba(45,212,191,.4)">6</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"activityBar.background"</span><span class="o">:</span>
+                <span style="color:#34D399">"#061a1a"</span><span class="o">,</span>
+              </div>
+              <div class="ext-preview__line">
+                <span style="color:rgba(45,212,191,.4)">7</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"terminal.ansiCyan"</span><span class="o">:</span>
+                <span style="color:#2DD4BF">"#2DD4BF"</span>
+              </div>
+              <div class="ext-preview__line">
+                <span style="color:rgba(45,212,191,.4)">8</span>
+                &nbsp;&nbsp;<span class="k">}</span>
+              </div>
+              <div class="ext-preview__line">
+                <span style="color:rgba(45,212,191,.4)">9</span>
+                <span class="k">}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <!-- ══ CONTACT ════════════════════════════════════════════════ -->
       <div class="hlayer l-contact" aria-label="Contact">
         <div class="contact-inner">
@@ -658,7 +787,7 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   position: relative;
 
   &__driver {
-    height: 800vh;
+    height: 900vh;
     pointer-events: none;
   }
 
@@ -735,6 +864,7 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   &.l-skills,
   &.l-projects,
   &.l-certs,
+  &.l-vscode-ext,
   &.l-contact {
     opacity: 0;
     pointer-events: none;
@@ -1099,6 +1229,72 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   &:hover {
     border-color: var(--color-primary);
     color: var(--color-primary);
+  }
+}
+
+// ── Currently Building ────────────────────────────────────────
+.hero-building {
+  display: inline-flex;
+  align-items: center;
+  gap: .75rem;
+  flex-wrap: wrap;
+
+  &__label {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    font-family: var(--font-mono);
+    font-size: .75rem;
+    color: var(--color-text-muted);
+  }
+
+  &__pulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-success);
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, .4);
+    animation: building-pulse 2s ease-in-out infinite;
+  }
+
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    font-family: var(--font-mono);
+    font-size: .78rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    background: rgba(45, 212, 191, .07);
+    border: 1px solid rgba(45, 212, 191, .2);
+    padding: .25rem .75rem;
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    transition: all .18s ease;
+
+    &:hover {
+      background: rgba(45, 212, 191, .14);
+      border-color: rgba(45, 212, 191, .4);
+    }
+  }
+
+  &__name {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@keyframes building-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, .4);
+  }
+
+  50% {
+    box-shadow: 0 0 0 5px rgba(52, 211, 153, .0);
   }
 }
 
@@ -1522,6 +1718,189 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   }
 }
 
+// ── VS Code Extension layer ───────────────────────────────────
+.l-vscode-ext {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2rem;
+}
+
+.ext-spotlight {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  max-width: 900px;
+  width: 100%;
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 520px;
+  }
+}
+
+.ext-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+
+.ext-icon {
+  width: 52px;
+  height: 52px;
+  background: rgba(45, 212, 191, .08);
+  border: 1px solid rgba(45, 212, 191, .2);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ext-meta {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: .72rem;
+    color: var(--color-primary);
+    background: rgba(45, 212, 191, .08);
+    border: 1px solid rgba(45, 212, 191, .18);
+    padding: 2px 10px;
+    border-radius: var(--radius-pill);
+    width: fit-content;
+  }
+}
+
+.ext-title {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -.025em;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.ext-desc {
+  font-size: .9375rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  max-width: 400px;
+  margin: 0;
+}
+
+.ext-swatches {
+  display: flex;
+  gap: 6px;
+}
+
+.ext-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, .08);
+  transition: transform .15s ease;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+}
+
+.ext-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .75rem 1.75rem;
+  background: var(--color-primary);
+  color: #082121;
+  border-radius: var(--radius-md);
+  font-size: .9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  align-self: flex-start;
+  transition: all var(--transition-base);
+
+  &:hover {
+    background: var(--color-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(45, 212, 191, .28);
+  }
+}
+
+// ── Mini VS Code preview ──────────────────────────────────────
+.ext-preview {
+  width: 360px;
+  flex-shrink: 0;
+  background: rgba(4, 20, 20, .92);
+  border: 1px solid rgba(45, 212, 191, .14);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, .4), 0 0 0 1px rgba(45, 212, 191, .06);
+
+  @media (max-width: 900px) {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  &__bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    background: rgba(13, 46, 44, .95);
+    padding: 0 12px;
+    border-bottom: 1px solid rgba(45, 212, 191, .1);
+  }
+
+  &__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  &__title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(45, 212, 191, .45);
+    margin-left: 6px;
+  }
+
+  &__code {
+    padding: 1rem 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.9;
+  }
+
+  &__line {
+    display: flex;
+    gap: .625rem;
+
+    >span:first-child {
+      min-width: 14px;
+      text-align: right;
+      user-select: none;
+    }
+  }
+
+  .k {
+    color: #2DD4BF;
+  }
+
+  .s {
+    color: #7AE7DA;
+  }
+
+  .o {
+    color: rgba(214, 245, 242, .35);
+  }
+}
+
 // ── Contact layer ─────────────────────────────────────────────
 .l-contact {
   display: flex;
@@ -1869,10 +2248,23 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   pointer-events: none;
 }
 
-.toast-enter-active { transition: all .25s cubic-bezier(.34, 1.4, .64, 1); }
-.toast-leave-active { transition: all .2s ease-in; }
-.toast-enter-from   { opacity: 0; transform: translateX(-50%) translateY(12px) scale(.92); }
-.toast-leave-to     { opacity: 0; transform: translateX(-50%) translateY(-8px) scale(.96); }
+.toast-enter-active {
+  transition: all .25s cubic-bezier(.34, 1.4, .64, 1);
+}
+
+.toast-leave-active {
+  transition: all .2s ease-in;
+}
+
+.toast-enter-from {
+  opacity: 0;
+  transform: translateX(-50%) translateY(12px) scale(.92);
+}
+
+.toast-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-8px) scale(.96);
+}
 
 // ════════════════════════════════════════════════════════════
 // LIGHT THEME — override de todos os valores hardcoded
