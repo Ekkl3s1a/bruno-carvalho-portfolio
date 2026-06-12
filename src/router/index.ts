@@ -27,6 +27,11 @@ const router = createRouter({
       component: () => import('@/views/CertificationsView.vue'),
       meta: { title: 'Certifications' },
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('@/views/NotFoundView.vue'),
+    },
   ],
   scrollBehavior(to, _from, savedPosition) {
     if (savedPosition) return savedPosition
@@ -35,13 +40,18 @@ const router = createRouter({
   },
 })
 
-// Dynamic page title
-router.afterEach((to) => {
-  setTimeout(() => ScrollTrigger.refresh(), 150)
-  const title = to.meta.title as string | undefined
-  document.title = title
-    ? `${title} — Bruno Carvalho`
-    : 'Bruno Carvalho — Web Developer'
+
+router.beforeEach(() => {
+  // Mata todas as instâncias activas antes de navegar
+  const all = ScrollTrigger.getAll()
+  all.forEach(st => st.kill())
+})
+
+router.afterEach(() => {
+  // Pequeno delay para o DOM assentar, depois refresh
+  requestAnimationFrame(() => {
+    ScrollTrigger.refresh(true) // true = força recalcular posições
+  })
 })
 
 export default router
