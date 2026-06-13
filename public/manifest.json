@@ -1,0 +1,45 @@
+{
+  "name": "Bruno Carvalho — Web Developer",
+  "short_name": "Bruno C.",
+  "description": "Portfolio of Bruno Carvalho — frontend developer from Portugal",
+  "start_url": "/bruno-carvalho-portfolio/",
+  "scope": "/bruno-carvalho-portfolio/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#082121",
+  "theme_color": "#2DD4BF",
+  "lang": "en",
+  "categories": ["portfolio", "development"],
+  "icons": [
+    {
+      "src": "/bruno-carvalho-portfolio/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/bruno-carvalho-portfolio/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/bruno-carvalho-portfolio/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Projects",
+      "short_name": "Projects",
+      "url": "/bruno-carvalho-portfolio/#/projects"
+    },
+    {
+      "name": "Certifications",
+      "short_name": "Certs",
+      "url": "/bruno-carvalho-portfolio/#/certifications"
+    }
+  ]
+}

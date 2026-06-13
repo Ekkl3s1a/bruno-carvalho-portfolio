@@ -3,6 +3,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { Menu, X, Download } from 'lucide-vue-next'
 import ThemeToggle from '@/components/shared/ThemeToggle.vue'
+import LangToggle from '@/components/shared/LangToggle.vue'
 
 // ── CV ────────────────────────────────────────────────────────
 const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
@@ -92,6 +93,8 @@ onBeforeUnmount(() => {
 
       <!-- Actions -->
       <div class="header__actions">
+        <LangToggle />
+
         <ThemeToggle />
 
         <a

@@ -9,6 +9,8 @@ import { getMorphTo } from '@/composables/useBackground3D'
 import BaseButton from '@/components/shared/BaseButton.vue'
 import SocialLink from '@/components/shared/SocialLink.vue'
 import { useThemeStore } from '@/stores/theme'
+import LangToggle from '@/components/shared/LangToggle.vue'
+import WakaTimeStats from '@/components/shared/WakaTimeStats.vue'
 
 const themeStore = useThemeStore()
 const router = useRouter()
@@ -336,6 +338,10 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
 
           <!-- Accções -->
           <div class="vsc-titlebar-actions">
+
+            <LangToggle />
+
+            <span class="vsc-action-sep" aria-hidden="true" />
 
             <!-- Theme toggle -->
             <button class="vsc-action vsc-action--toggle"
@@ -766,6 +772,8 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
               ↑ Back to surface
             </button>
           </div>
+
+          <WakaTimeStats class="contact-waka" />
 
         </div>
       </div>
@@ -1906,16 +1914,50 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 2rem;
+  overflow: auto;
+}
+
+.contact-layout {
+  display: flex;
+  align-items: center;
+  gap: 3.5rem;
+  max-width: 960px;
+  width: 100%;
+
+  // Em mobile ou quando não há API key, empilha
+  @media (max-width: 860px) {
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+  }
 }
 
 .contact-inner {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 1.5rem;
-  text-align: center;
-  max-width: 560px;
-  padding: 0 1.5rem;
+  max-width: 480px;
+
+  // Em mobile volta ao centro
+  @media (max-width: 860px) {
+    align-items: center;
+    text-align: center;
+    max-width: 100%;
+  }
+}
+
+.contact-waka {
+  flex-shrink: 0;
+  width: 280px;
+  align-self: stretch;
+
+  @media (max-width: 860px) {
+    width: 100%;
+    max-width: 360px;
+  }
 }
 
 .contact-depth {

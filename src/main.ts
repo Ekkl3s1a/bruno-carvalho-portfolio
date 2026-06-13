@@ -6,6 +6,7 @@ import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 
 import App from './App.vue'
 import router from './router'
+import { i18n } from '@/i18n'
 
 // Global styles (tokens + reset + typography + animations)
 import '@/styles/main.scss'
@@ -20,4 +21,5 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+app.use(i18n)
 app.mount('#app')
