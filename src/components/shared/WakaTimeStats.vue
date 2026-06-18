@@ -13,7 +13,7 @@ const stats   = ref<WakaStats | null>(null)
 const loading = ref(true)
 const error   = ref(false)
 
-const API_KEY = import.meta.env.VITE_WAKATIME_API_KEY as string | undefined
+const API_KEY = undefined
 
 // Maps WakaTime language names → brand colors
 const langColors: Record<string, string> = {
@@ -34,13 +34,9 @@ function getColor(name: string): string {
 }
 
 async function fetchStats() {
-  if (!API_KEY) { loading.value = false; return }
-
   try {
-    const res = await fetch(
-      `https://wakatime.com/api/v1/users/current/stats/last_7_days?api_key=${API_KEY}`
-    )
-    if (!res.ok) throw new Error('WakaTime API error')
+    const res = await fetch(`${import.meta.env.BASE_URL}wakatime.json`)
+    if (!res.ok) throw new Error('Stats file not found')
 
     const { data } = await res.json()
 
@@ -49,11 +45,7 @@ async function fetchStats() {
       thisWeek:  data.human_readable_total_including_other_language ?? '—',
       topLangs:  (data.languages ?? [])
         .slice(0, 5)
-        .map((l: any) => ({
-          name:    l.name,
-          percent: Math.round(l.percent),
-          color:   getColor(l.name),
-        })),
+        .map((l: any) => ({ name: l.name, percent: Math.round(l.percent), color: getColor(l.name) })),
       lastUpdate: new Date().toLocaleDateString('en', { month: 'short', day: 'numeric' }),
     }
   } catch {
@@ -69,44 +61,15 @@ onMounted(fetchStats)
 <template>
   <div class="waka" aria-label="WakaTime coding stats">
 
-    <!-- No API key → show badge -->
-    <template v-if="!API_KEY">
-      <div class="waka__no-key">
-        <span class="waka__label">Coding activity</span>
-        <a
-          href="https://wakatime.com/@Ekkl3s1a"
-          target="_blank" rel="noopener noreferrer"
-          class="waka__badge-link"
-          aria-label="View WakaTime profile"
-        >
-          <img
-            src="https://wakatime.com/badge/user/Ekkl3s1a.svg"
-            alt="WakaTime coding activity"
-            class="waka__badge"
-          />
-        </a>
-      </div>
-    </template>
-
-    <!-- Loading -->
-    <template v-else-if="loading">
-      <div class="waka__skeleton">
-        <div class="waka__sk-title" />
-        <div class="waka__sk-bar" />
-        <div class="waka__sk-bar waka__sk-bar--short" />
-        <div class="waka__sk-bar" />
-      </div>
-    </template>
-
     <!-- Error -->
-    <template v-else-if="error">
+    <template v-if="error">
       <div class="waka__error">
         <span>⚠ WakaTime unavailable</span>
       </div>
     </template>
 
     <!-- Stats -->
-    <template v-else-if="stats">
+    <template v-if="stats">
       <div class="waka__header">
         <span class="waka__label">Coding activity</span>
         <span class="waka__updated">last 7 days</span>

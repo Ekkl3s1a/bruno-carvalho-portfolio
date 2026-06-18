@@ -1,0 +1,30 @@
+name: Update WakaTime stats
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # diariamente às 6h UTC
+  workflow_dispatch:        # permite correr manualmente
+
+permissions:
+  contents: write
+
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch WakaTime stats
+        env:
+          WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+        run: |
+          curl -s "https://wakatime.com/api/v1/users/current/stats/last_7_days?api_key=${WAKATIME_API_KEY}" \
+            -o public/wakatime.json
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/wakatime.json
+          git diff --staged --quiet || git commit -m "chore: update wakatime stats"
+          git push

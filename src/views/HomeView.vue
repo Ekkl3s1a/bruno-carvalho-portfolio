@@ -329,10 +329,10 @@ const cvUrl = `${import.meta.env.BASE_URL}resume_bruno_carvalho.pdf`
 
             <!-- Tabs navegáveis -->
             <RouterLink to="/projects" class="vsc-tab">
-              <span aria-hidden="true">📂</span>projects/
+              <span aria-hidden="true">📂</span>{{ $t('nav.projects') }}
             </RouterLink>
             <RouterLink to="/certifications" class="vsc-tab">
-              <span aria-hidden="true">🏆</span>certifications/
+              <span aria-hidden="true">🏆</span>{{ $t('nav.certs') }}
             </RouterLink>
           </nav>
 

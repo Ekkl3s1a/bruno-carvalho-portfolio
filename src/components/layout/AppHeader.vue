@@ -25,9 +25,9 @@ interface NavLink {
 }
 
 const navLinks = [
-  { label: 'Home',           to: '/',                hash: '' },
-  { label: 'Projects',       to: '/projects',        hash: '' },
-  { label: 'Certifications', to: '/certifications',  hash: '' }
+  { label: 'nav.home',           to: '/',                hash: '' },
+  { label: 'nav.projects',       to: '/projects',        hash: '' },
+  { label: 'nav.certs', to: '/certifications',  hash: '' }
 ]
 
 // ── Active state manual ───────────────────────────────────────
@@ -87,7 +87,7 @@ onBeforeUnmount(() => {
           class="header__nav-link"
           :class="{ 'header__nav-link--active': isActive(link) }"
         >
-          {{ link.label }}
+          {{ $t(link.label) }}
         </RouterLink>
       </nav>
 
